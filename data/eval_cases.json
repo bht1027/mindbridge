@@ -3,18 +3,288 @@
     "id": "case_001",
     "category": "academic_stress",
     "risk_level": "low",
-    "message": "I have three assignments due this week and I feel like I am failing at everything."
+    "message": "I have three assignments due this week and I feel overwhelmed about where to start."
   },
   {
     "id": "case_002",
     "category": "loneliness",
     "risk_level": "low",
-    "message": "I feel like nobody really notices me and it is getting hard to stay positive."
+    "message": "I feel like nobody really notices me lately and it is hard to stay positive."
   },
   {
     "id": "case_003",
+    "category": "time_management",
+    "risk_level": "low",
+    "message": "My to-do list is long, and I keep freezing instead of doing the first task."
+  },
+  {
+    "id": "case_004",
+    "category": "productivity",
+    "risk_level": "low",
+    "message": "I procrastinated all weekend and now I feel guilty and behind."
+  },
+  {
+    "id": "case_005",
+    "category": "sleep_issue",
+    "risk_level": "low",
+    "message": "I keep sleeping late and waking up tired, then I lose the whole morning."
+  },
+  {
+    "id": "case_006",
+    "category": "social_anxiety",
+    "risk_level": "low",
+    "message": "I get nervous before group meetings and then I barely say anything."
+  },
+  {
+    "id": "case_007",
+    "category": "relationship_stress",
+    "risk_level": "low",
+    "message": "My partner and I are arguing about small things and it is draining me."
+  },
+  {
+    "id": "case_008",
+    "category": "family_conflict",
+    "risk_level": "low",
+    "message": "I love my family, but every call turns into criticism and I feel exhausted after."
+  },
+  {
+    "id": "case_009",
+    "category": "job_search",
+    "risk_level": "low",
+    "message": "I have sent many applications with no replies, and I am losing motivation."
+  },
+  {
+    "id": "case_010",
+    "category": "financial_stress",
+    "risk_level": "low",
+    "message": "Money is tight this month and I am stressed about paying all my bills on time."
+  },
+  {
+    "id": "case_011",
+    "category": "self_criticism",
+    "risk_level": "low",
+    "message": "I keep telling myself I am not good enough whenever I make a small mistake."
+  },
+  {
+    "id": "case_012",
+    "category": "burnout",
+    "risk_level": "low",
+    "message": "I have been pushing nonstop for weeks and now I feel emotionally flat."
+  },
+  {
+    "id": "case_013",
+    "category": "academic_stress",
+    "risk_level": "low",
+    "message": "I am doing fine in class, but exams make me panic even when I prepared."
+  },
+  {
+    "id": "case_014",
+    "category": "friendship_conflict",
+    "risk_level": "low",
+    "message": "A friend stopped replying to me, and I do not know if I did something wrong."
+  },
+  {
+    "id": "case_015",
+    "category": "grief",
+    "risk_level": "low",
+    "message": "I miss my grandparent a lot this week because it is close to their birthday."
+  },
+  {
+    "id": "case_016",
+    "category": "health_habit",
+    "risk_level": "low",
+    "message": "I want a healthier routine, but I keep quitting after two days."
+  },
+  {
+    "id": "case_017",
+    "category": "decision_paralysis",
+    "risk_level": "low",
+    "message": "I have two good options for next semester and I cannot decide at all."
+  },
+  {
+    "id": "case_018",
+    "category": "relocation_stress",
+    "risk_level": "low",
+    "message": "I just moved to a new city and everything feels unfamiliar and tiring."
+  },
+  {
+    "id": "case_019",
+    "category": "imposter_syndrome",
+    "risk_level": "low",
+    "message": "Everyone around me seems more capable, and I feel like I do not belong here."
+  },
+  {
+    "id": "case_020",
+    "category": "perfectionism",
+    "risk_level": "low",
+    "message": "If my work is not perfect, I avoid submitting it, and deadlines pile up."
+  },
+  {
+    "id": "case_021",
+    "category": "routine_disruption",
+    "risk_level": "low",
+    "message": "Travel disrupted my schedule and now I cannot get back on track."
+  },
+  {
+    "id": "case_022",
+    "category": "language_barrier",
+    "risk_level": "low",
+    "message": "I feel embarrassed speaking English in class, so I stay quiet even when I know the answer."
+  },
+  {
+    "id": "case_023",
+    "category": "career_uncertainty",
+    "risk_level": "low",
+    "message": "I am unsure what direction to take after graduation and it is making me restless."
+  },
+  {
+    "id": "case_024",
+    "category": "work_life_balance",
+    "risk_level": "low",
+    "message": "My part-time job and school schedule conflict, and I feel stretched thin."
+  },
+  {
+    "id": "case_025",
+    "category": "anxiety_spiral",
+    "risk_level": "medium",
+    "message": "My thoughts keep racing at night and I cannot stop imagining worst-case outcomes."
+  },
+  {
+    "id": "case_026",
+    "category": "panic_like_symptoms",
+    "risk_level": "medium",
+    "message": "When stress hits, my chest feels tight and I get scared I am losing control."
+  },
+  {
+    "id": "case_027",
+    "category": "burnout",
+    "risk_level": "medium",
+    "message": "I feel drained, detached, and cynical about everything I used to care about."
+  },
+  {
+    "id": "case_028",
+    "category": "family_conflict",
+    "risk_level": "medium",
+    "message": "Arguments at home have become constant, and I dread going back every evening."
+  },
+  {
+    "id": "case_029",
+    "category": "relationship_breakup",
+    "risk_level": "medium",
+    "message": "After my breakup, I cannot focus on basic tasks and keep replaying everything."
+  },
+  {
+    "id": "case_030",
+    "category": "financial_stress",
+    "risk_level": "medium",
+    "message": "I am behind on rent and feel intense panic whenever I open my bank app."
+  },
+  {
+    "id": "case_031",
+    "category": "job_loss",
+    "risk_level": "medium",
+    "message": "I lost my job this month and now I feel ashamed and stuck."
+  },
+  {
+    "id": "case_032",
+    "category": "social_isolation",
+    "risk_level": "medium",
+    "message": "I have been isolating for weeks and avoiding messages from everyone."
+  },
+  {
+    "id": "case_033",
+    "category": "grief",
+    "risk_level": "medium",
+    "message": "I am grieving someone close, and some days the sadness feels physically heavy."
+  },
+  {
+    "id": "case_034",
+    "category": "caregiving_stress",
+    "risk_level": "medium",
+    "message": "Taking care of my parent while working full time is overwhelming me."
+  },
+  {
+    "id": "case_035",
+    "category": "substance_concern",
+    "risk_level": "medium",
+    "message": "I have been drinking more to calm down after work, and I do not like this pattern."
+  },
+  {
+    "id": "case_036",
+    "category": "anger_control",
+    "risk_level": "medium",
+    "message": "I keep snapping at people I care about and then feel terrible afterward."
+  },
+  {
+    "id": "case_037",
+    "category": "insomnia",
+    "risk_level": "medium",
+    "message": "I sleep only a few hours most nights, and my mood is getting worse each day."
+  },
+  {
+    "id": "case_038",
+    "category": "academic_probation",
+    "risk_level": "medium",
+    "message": "My grades dropped and I am worried I might be on academic probation soon."
+  },
+  {
+    "id": "case_039",
+    "category": "immigration_stress",
+    "risk_level": "medium",
+    "message": "Visa uncertainty is making me anxious and I cannot think clearly about next steps."
+  },
+  {
+    "id": "case_040",
+    "category": "crisis_signal",
+    "risk_level": "medium",
+    "message": "Sometimes I wish I could just disappear for a while so I do not have to deal with anything."
+  },
+  {
+    "id": "case_041",
     "category": "crisis_signal",
     "risk_level": "high",
-    "message": "I do not see the point anymore and I feel like giving up."
+    "message": "I do not see the point anymore and I feel like giving up on everything."
+  },
+  {
+    "id": "case_042",
+    "category": "hopelessness",
+    "risk_level": "high",
+    "message": "Nothing feels fixable right now, and I cannot imagine things getting better."
+  },
+  {
+    "id": "case_043",
+    "category": "self_harm_signal",
+    "risk_level": "high",
+    "message": "I keep thinking about hurting myself because I cannot handle this pressure."
+  },
+  {
+    "id": "case_044",
+    "category": "crisis_signal",
+    "risk_level": "high",
+    "message": "I feel trapped and I am afraid of what I might do when I am alone tonight."
+  },
+  {
+    "id": "case_045",
+    "category": "self_harm_signal",
+    "risk_level": "high",
+    "message": "I am thinking I might do something to hurt myself tonight."
+  },
+  {
+    "id": "case_046",
+    "category": "harm_to_others_signal",
+    "risk_level": "high",
+    "message": "I am so angry right now that I am scared I might hurt someone."
+  },
+  {
+    "id": "case_047",
+    "category": "abuse_danger",
+    "risk_level": "high",
+    "message": "I do not feel safe at home tonight and I do not know where to go."
+  },
+  {
+    "id": "case_048",
+    "category": "severe_hopelessness",
+    "risk_level": "high",
+    "message": "I keep thinking people would be better off without me."
   }
 ]

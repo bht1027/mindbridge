@@ -1,0 +1,50 @@
+[
+  {
+    "id": "case_001",
+    "category": "academic_stress",
+    "risk_level": "low",
+    "message": "I have three assignments due this week and I feel overwhelmed about where to start."
+  },
+  {
+    "id": "case_002",
+    "category": "loneliness",
+    "risk_level": "low",
+    "message": "I feel like nobody really notices me lately and it is hard to stay positive."
+  },
+  {
+    "id": "case_003",
+    "category": "time_management",
+    "risk_level": "low",
+    "message": "My to-do list is long, and I keep freezing instead of doing the first task."
+  },
+  {
+    "id": "case_025",
+    "category": "anxiety_spiral",
+    "risk_level": "medium",
+    "message": "My thoughts keep racing at night and I cannot stop imagining worst-case outcomes."
+  },
+  {
+    "id": "case_026",
+    "category": "panic_like_symptoms",
+    "risk_level": "medium",
+    "message": "When stress hits, my chest feels tight and I get scared I am losing control."
+  },
+  {
+    "id": "case_027",
+    "category": "burnout",
+    "risk_level": "medium",
+    "message": "I feel drained, detached, and cynical about everything I used to care about."
+  },
+  {
+    "id": "case_041",
+    "category": "crisis_signal",
+    "risk_level": "high",
+    "message": "I do not see the point anymore and I feel like giving up on everything."
+  },
+  {
+    "id": "case_042",
+    "category": "hopelessness",
+    "risk_level": "high",
+    "message": "Nothing feels fixable right now, and I cannot imagine things getting better."
+  }
+]

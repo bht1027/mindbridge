@@ -5,12 +5,16 @@
 ## What this skeleton includes
 
 - `Input Analyzer` for emotion, intent, and risk classification
+- `Support Knowledge Retriever` for lightweight grounding
+- `Strategy Route` for scenario-specific action planning
 - `Empathy Agent` for emotional acknowledgment
 - `Strategy Agent` for practical next steps
 - `Safety Agent` for response constraints and risk checks
+- explicit backend `Safety Trace` logging
 - `Coordinator` for first-pass response synthesis
 - `Reflection Critic` and `Reviser` for self-improvement
 - `Final Safety Check` before the reply is returned
+- short-term conversation memory (`memory_context` + `user_state`)
 - a CLI entry point and a simple `Streamlit` demo
 
 ## Architecture
@@ -20,6 +24,9 @@ User Input
    |
    v
 Input Analyzer
+   |
+   v
+Support Knowledge Retriever
    |
    +-------------------+-------------------+
    |                   |                   |
@@ -55,9 +62,14 @@ mindbridge/
   prompts.py
   schemas.py
   agents.py
+  retriever.py
+  judge.py
+  metrics.py
+  run_modes.py
   pipeline.py
   data/
     eval_cases.json
+    support_kb.json
 ```
 
 ## Setup
@@ -85,8 +97,32 @@ Fill in:
 
 - `OPENAI_API_KEY`
 - optional `OPENAI_MODEL`
+- optional `JUDGE_MODEL`
 - optional `OPENAI_TEMPERATURE`
 - optional `SHOW_INTERMEDIATE`
+- optional `SUPPORT_KB_PATH`
+- optional `RETRIEVAL_TOP_K`
+- optional `MEMORY_WINDOW`
+- optional `RESPONSE_STYLE` (`conversational` or `structured`)
+- optional `THERAPIST_FLOW_STRICT` (`true` for therapist-style flow, `false` for lighter assistant flow)
+- optional `PERSISTENT_MEMORY_ENABLED` (`true` to store profile memory on disk)
+- optional `PERSISTENT_MEMORY_PATH` (JSON path for saved profile memory, default `data/user_profiles.json`)
+- optional `PERSISTENT_HISTORY_LIMIT` (max saved turns per profile)
+
+Example switch:
+
+```bash
+# therapist-style flow (deeper exploration first)
+THERAPIST_FLOW_STRICT=true
+
+# lighter assistant flow (faster to suggestions)
+THERAPIST_FLOW_STRICT=false
+
+# persistent profile memory
+PERSISTENT_MEMORY_ENABLED=true
+PERSISTENT_MEMORY_PATH=data/user_profiles.json
+PERSISTENT_HISTORY_LIMIT=200
+```
 
 ## Run the CLI
 
@@ -104,6 +140,10 @@ python app.py --system pipeline --mode full --message "I feel overwhelmed with s
 python app.py --system pipeline --mode no_critic --message "I feel overwhelmed with school."
 python app.py --system pipeline --mode no_reviser --message "I feel overwhelmed with school."
 python app.py --system pipeline --mode no_safety --message "I feel overwhelmed with school."
+python app.py --system pipeline --mode no_retrieval --message "I feel overwhelmed with school."
+python app.py --system pipeline --mode full --chat
+python app.py --system pipeline --mode full --chat --profile-id alice
+python app.py --system pipeline --mode full --profile-id alice --clear-profile-memory --message "Let's restart."
 ```
 
 To save a run as Markdown:
@@ -126,18 +166,50 @@ python app.py --system baseline --message "I feel overwhelmed with school."
 streamlit run demo_streamlit.py
 ```
 
+The Streamlit demo uses chat-style input/output (`st.chat_input` + `st.chat_message`) and includes a collapsible `Pipeline Debug` panel for intent/risk/route tracing.
+It also supports profile-based persistent memory: use the same `Profile ID` in the sidebar to load previous turns across app restarts.
+
 ## Run evaluation
 
-This script runs the single-agent baseline plus the full and ablated pipeline variants across `data/eval_cases.json`.
+This script runs the single-agent baseline plus the full and ablated pipeline variants across `data/eval_cases.json`, then (by default) uses an LLM judge to score quality on:
+
+- empathy
+- helpfulness
+- safety
+- naturalness
 
 ```bash
 python evaluate.py
+python evaluate.py --judge-model gpt-4.1-mini
+python evaluate.py --skip-judge
+python evaluate.py --bootstrap-samples 5000
 ```
 
 By default it saves:
 
 - `evaluation_results.json`
 - `evaluation_report.md`
+
+Reproducible helper scripts:
+
+```bash
+./scripts/run_eval_fast.sh
+./scripts/run_eval_full.sh
+```
+
+`run_eval_fast.sh` skips the LLM judge for quick checks. `run_eval_full.sh` runs judge scoring, bootstrap CI, and qualitative sections.
+
+## Rubric Alignment (Evaluation 4.3)
+
+- Quantitative metrics:
+  - runtime and response-length summaries (`runtime_summary`)
+  - baseline comparison (`single_agent_baseline` vs `pipeline_*`)
+  - statistical significance via paired bootstrap CI (`paired_quality_deltas`)
+  - ablation studies (`no_critic`, `no_reviser`, `no_safety`, `no_retrieval`)
+- Qualitative analysis:
+  - auto-selected case studies (top improvements and regressions)
+  - error analysis (runtime/judge errors and high-risk mismatch checks)
+  - limitations and future-work section in `evaluation_report.md`
 
 ## How the code is organized
 
@@ -150,32 +222,46 @@ Stores the prompt templates for all agents. This is the fastest place to iterate
 ### `agents.py`
 Defines a reusable JSON-returning agent wrapper over the LLM API.
 
+### `retriever.py`
+Implements lightweight keyword-overlap retrieval over `data/support_kb.json`.
+
 ### `pipeline.py`
 Runs the end-to-end workflow:
 
 1. analyze the input
-2. run empathy, strategy, and safety in parallel
-3. coordinate a draft response
-4. critique and revise the draft
-5. apply a final safety check
+2. retrieve support knowledge snippets
+3. run empathy, strategy, and safety in parallel
+4. coordinate a draft response
+5. critique and revise the draft
+6. apply a final safety check
 
 Supports ablation modes for:
 
 - `no_critic`
 - `no_reviser`
 - `no_safety`
+- `no_retrieval`
 
 ### `baseline.py`
 Defines the single-agent baseline used for comparison against the multi-agent pipeline.
 
 ### `evaluate.py`
-Runs batch evaluation across the baseline, the full pipeline, and the ablation variants.
+Runs batch evaluation across the baseline, the full pipeline, and the ablation variants, with optional judge-based scoring and paired bootstrap confidence intervals versus the baseline.
+
+### `judge.py`
+Implements the LLM-as-judge scorer for empathy, helpfulness, safety, and naturalness.
+
+### `metrics.py`
+Provides summary statistics and paired bootstrap CI utilities for evaluation analysis.
 
 ### `schemas.py`
 Defines the shared `DialogueState` object used to store intermediate outputs.
 
 ### `data/eval_cases.json`
-Small starter evaluation set that you can expand for experiments.
+Stratified evaluation set (48 cases) with low, medium, and high-risk scenarios across diverse categories.
+
+### `data/support_kb.json`
+Compact support knowledge base used by retrieval grounding.
 
 ## Suggested next development steps
 

@@ -59,23 +59,66 @@ def main() -> None:
         type=str,
         help="Optional path to save the result as a Markdown file.",
     )
+    parser.add_argument(
+        "--chat",
+        action="store_true",
+        help="Run multi-turn chat mode (pipeline only) with short-term memory.",
+    )
+    parser.add_argument(
+        "--profile-id",
+        type=str,
+        default="default",
+        help="Profile id used for persistent memory in pipeline mode.",
+    )
+    parser.add_argument(
+        "--clear-profile-memory",
+        action="store_true",
+        help="Clear stored memory for the given profile id before running (pipeline only).",
+    )
     args = parser.parse_args()
 
-    user_message = args.message or input("User: ").strip()
     settings = get_settings()
     settings.validate()
 
     if args.system == "baseline":
+        user_message = args.message or input("User: ").strip()
         runner = SingleAgentBaseline(settings)
         result = runner.run(user_message)
         title = "MindBridge Single-Agent Baseline Output"
         final_response = result.final_response
         payload = result.to_dict()
-    else:
+    elif args.chat:
         pipeline = MindBridgePipeline(
             settings,
             run_config=get_pipeline_run_config(args.mode),
+            profile_id=args.profile_id,
         )
+        if args.clear_profile_memory:
+            pipeline.clear_persistent_memory()
+        print("Chat mode started. Type 'exit' to quit.\n")
+        while True:
+            user_message = input("User: ").strip()
+            if not user_message:
+                continue
+            if user_message.lower() in {"exit", "quit"}:
+                break
+
+            result = pipeline.run(user_message)
+            print("\nAssistant:\n")
+            print(result.final_response)
+            print("\nSafety trace:\n")
+            print(json.dumps(result.safety_trace, ensure_ascii=False, indent=2))
+            print("")
+        return
+    else:
+        user_message = args.message or input("User: ").strip()
+        pipeline = MindBridgePipeline(
+            settings,
+            run_config=get_pipeline_run_config(args.mode),
+            profile_id=args.profile_id,
+        )
+        if args.clear_profile_memory:
+            pipeline.clear_persistent_memory()
         result = pipeline.run(user_message)
         title = f"MindBridge Pipeline Output ({args.mode})"
         final_response = result.final_response
@@ -83,6 +126,9 @@ def main() -> None:
 
     print("\nFinal response:\n")
     print(final_response)
+    if args.system == "pipeline":
+        print("\nSafety trace:\n")
+        print(json.dumps(payload.get("safety_trace", {}), ensure_ascii=False, indent=2))
 
     if settings.show_intermediate:
         print("\nRun details:\n")

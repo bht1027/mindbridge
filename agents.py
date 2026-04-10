@@ -19,7 +19,7 @@ from prompts import (
 )
 
 
-def _strip_code_fences(text: str) -> str:
+def _strip_code_fences(text: str) -> str: 
     cleaned = text.strip()
     if cleaned.startswith("```"):
         cleaned = cleaned.split("\n", 1)[1]
