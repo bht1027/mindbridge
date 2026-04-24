@@ -1,0 +1,244 @@
+{
+  "Fiona": {
+    "profile_id": "Fiona",
+    "active_session_id": "20260410T021008.728318Z",
+    "updated_at": "2026-04-10T02:27:58.431010+00:00",
+    "turns": 4,
+    "user_state": {
+      "main_stressor": "emotional state",
+      "emotion": "happy",
+      "risk_level": "low",
+      "session_stage": "rapport_and_safety",
+      "stage_goal": "Build emotional safety and trust before problem-solving.",
+      "last_strategy": "Invite you to specify which part you'd like me to remind you about or if there's a particular feeling or moment you want to revisit.",
+      "last_strategy_method": "",
+      "strategy_methods": [],
+      "failed_methods": [],
+      "last_reflection": "The user is seeking reassurance and clarity about past conversation points to feel more grounded in the dialogue."
+    },
+    "history": [
+      {
+        "session_id": "20260410T020852.554494Z",
+        "created_at": "2026-04-10T02:09:14.010719+00:00",
+        "user_input": "Hi, My name is Fiona",
+        "emotion": "neutral",
+        "topic": "greeting",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "rapport_and_safety",
+        "strategy_next_step": "Invite Fiona to share what brought her here or what she hopes to gain from this conversation.",
+        "strategy_suggestions": [
+          "Invite Fiona to share a bit about what brought her here or what she hopes to gain from this conversation.",
+          "Gently ask if there is anything on her mind she would like to talk about or any support she feels she might need."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "Hi Fiona, it’s nice to meet you Thanks for introducing yourself, Fiona—it's great to meet you and I'm here to support you however you need.\n\nWe can move at your pace here.\n\nWhat feels most intense right now?\n\nIf you want, we can look at one specific moment together."
+      },
+      {
+        "session_id": "20260410T020852.554494Z",
+        "created_at": "2026-04-10T02:09:34.819836+00:00",
+        "user_input": "I feel happy now",
+        "emotion": "happy",
+        "topic": "emotional state",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "problem_exploration",
+        "strategy_next_step": "Gently ask the user to share what specifically led to their happy feeling to deepen understanding.",
+        "strategy_suggestions": [
+          "Explore the specific moment or trigger that brought on this happy feeling to understand it better.",
+          "Reflect on how this positive feeling might influence what you want to focus on or talk about next."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I'm really glad to hear you're feeling happy right now It sounds like you're enjoying a really good moment right now—what do you think made you feel this way?\n\nLet's slow this down and make the picture clearer first.\n\nIf we zoom in, what part hurts most right now?"
+      },
+      {
+        "session_id": "20260410T021008.728318Z",
+        "created_at": "2026-04-10T02:10:30.757109+00:00",
+        "user_input": "Hi, do you remind me",
+        "emotion": "curious",
+        "topic": "memory recall",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "emotion_identification",
+        "strategy_next_step": "Invite you to specify which part you'd like me to remind you about or if there's a particular feeling or moment you want to revisit.",
+        "strategy_suggestions": [
+          "I can gently recap what we've talked about so far, focusing on your feelings and what you shared about happiness.",
+          "We could also revisit any specific moment or insight you want to explore more deeply."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I do remember earlier in this profile: we were discussing emotional state.\n\nYou’re curious about whether I remember something from before, and that shows you’re engaged in our conversation It sounds like you’re curious about what I remember from our chat, and that curiosity shows you’re really engaged in what we’re exploring together.\n\nNaming the feeling often makes it less overwhelming.\n\nIt seems like curious is very present right now.\n\nUnder the stress, what feeling is most present for you right now?"
+      },
+      {
+        "session_id": "20260410T021008.728318Z",
+        "created_at": "2026-04-10T02:27:58.427832+00:00",
+        "user_input": "I happy now",
+        "emotion": "happy",
+        "topic": "emotional state",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "rapport_and_safety",
+        "strategy_next_step": "Invite you to specify which part you'd like me to remind you about or if there's a particular feeling or moment you want to revisit.",
+        "strategy_suggestions": [
+          "I can gently recap what we've talked about so far, focusing on your feelings and what you shared about happiness.",
+          "We could revisit any specific moment or insight you want to explore more deeply."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I remember you asked if I could remind you about something from our conversation It sounds like you're really interested in making sure we're both clear on what we've talked about so far, which is a great way to stay connected.\n\nI am glad to hear that this moment feels a little lighter.\n\nThat is good to hear. What do you think helped this shift happen today?\n\nIf you want, we can note one small thing that helped today so you can return to it later."
+      }
+    ]
+  },
+  "default": {
+    "profile_id": "default",
+    "active_session_id": "20260419T021253.086809Z",
+    "updated_at": "2026-04-19T03:53:52.251594+00:00",
+    "turns": 7,
+    "user_state": {
+      "main_stressor": "coping strategies",
+      "emotion": "disappointed",
+      "risk_level": "low",
+      "session_stage": "follow_up",
+      "stage_goal": "Review what happened since last step and adjust the plan.",
+      "last_strategy": "Make a quick list of all your assignments and deadlines, then pick one urgent task to break down into a 15-minute first action.",
+      "last_strategy_method": "",
+      "strategy_methods": [],
+      "failed_methods": [
+        "journaling"
+      ],
+      "last_reflection": "The user is expressing disappointment about a coping method not working and may benefit from a more tailored, stepwise approach to managing stress."
+    },
+    "history": [
+      {
+        "session_id": "20260419T021253.086809Z",
+        "created_at": "2026-04-19T02:13:18.545319+00:00",
+        "user_input": "I AM SAD",
+        "emotion": "sadness",
+        "topic": "emotional distress",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "rapport_and_safety",
+        "strategy_next_step": "Try choosing one very easy, gentle activity that feels comforting right now, even if it’s just for a few minutes.",
+        "strategy_suggestions": [
+          "Consider a very easy, low-energy activity that feels comforting, like listening to a favorite song or sitting quietly with a warm drink.",
+          "If you feel up to it, think about one moderate action that could help, such as writing down what’s making you sad or sharing your feelings with someone you trust."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I'm really sorry you're feeling so sad right now It sounds like your sadness feels really heavy right now, and finding a small, gentle way to care for yourself might help ease that weight a bit.\n\nWe can move at your pace here.\n\nNice to meet you. What would feel most helpful to talk about today?"
+      },
+      {
+        "session_id": "20260419T021253.086809Z",
+        "created_at": "2026-04-19T02:21:29.906363+00:00",
+        "user_input": "I AM SAD",
+        "emotion": "sadness",
+        "topic": "emotional distress",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "rapport_and_safety",
+        "strategy_next_step": "Gently invite the user to describe what feels hardest about their sadness at this moment to deepen emotional safety.",
+        "strategy_suggestions": [
+          "Share more about what feels most difficult or heavy in your sadness so I can better understand and support you.",
+          "Consider naming one small thing that might bring even a tiny bit of comfort or relief, no matter how small."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I'm really sorry you're feeling so sad right now, and it’s completely okay to feel this way It sounds like your sadness feels really heavy right now, and I’m here to listen whenever you’re ready to share more about what’s hardest for you.\n\nThanks for introducing yourself. What brought you in today?"
+      },
+      {
+        "session_id": "20260419T021253.086809Z",
+        "created_at": "2026-04-19T03:12:25.499334+00:00",
+        "user_input": "I AM SAD",
+        "emotion": "sadness",
+        "topic": "emotional distress",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "rapport_and_safety",
+        "strategy_next_step": "Invite the user to share one small detail or moment about their sadness that feels safe to express.",
+        "strategy_suggestions": [
+          "Try naming one very small, manageable feeling or thought related to your sadness to help start expressing it.",
+          "If it feels too hard to talk about feelings, consider focusing on a simple, comforting sensory experience you notice right now."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "You’re feeling really sad right now, and that’s a lot to carry It sounds like your sadness feels really heavy right now, and I'm here to listen whenever you want to share more about it.\n\nGlad you are here. What is one thing you want support with right now?"
+      },
+      {
+        "session_id": "20260419T021253.086809Z",
+        "created_at": "2026-04-19T03:37:54.588833+00:00",
+        "user_input": "I AM SAD",
+        "emotion": "sadness",
+        "topic": "emotional distress",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "rapport_and_safety",
+        "strategy_next_step": "Invite the user to pick one very small, comforting action they feel able to try right now, emphasizing that it’s okay if it’s just for a brief moment.",
+        "strategy_suggestions": [
+          "Try choosing one very easy, gentle activity that feels comforting right now, such as listening to a favorite song or holding a comforting object.",
+          "If you feel up to it, consider starting with a very small action like opening a window or stretching gently for just a minute."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I hear that you're feeling really sad right now, and that must be really tough It sounds like your sadness feels really heavy right now, and I'm here to support you through it.\n\nNice to meet you. What would feel most helpful to talk about today?\n\nIf this gets heavier later, reach out early for extra support."
+      },
+      {
+        "session_id": "20260419T021253.086809Z",
+        "created_at": "2026-04-19T03:49:24.777106+00:00",
+        "user_input": "I AM SAD",
+        "emotion": "sadness",
+        "topic": "emotional distress",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "rapport_and_safety",
+        "strategy_next_step": "Invite the user to name one specific feeling or focus on a small comforting sensory detail to gently start expressing their sadness.",
+        "strategy_suggestions": [
+          "Try naming your sadness more specifically—like feeling lonely, tired, or disappointed—to better understand what you need.",
+          "If naming feelings feels hard, focus on a simple sensory comfort, like noticing a soft texture or a gentle sound around you."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I'm sorry you're feeling this way right now\n\nThanks for introducing yourself. What brought you in today?"
+      },
+      {
+        "session_id": "20260419T021253.086809Z",
+        "created_at": "2026-04-19T03:51:29.872615+00:00",
+        "user_input": "I feel overwhelmed with school",
+        "emotion": "overwhelmed",
+        "topic": "school stress",
+        "risk_level": "low",
+        "strategy_route": "academic_overload",
+        "session_stage": "root_cause_exploration",
+        "strategy_next_step": "Invite the user to list their school assignments and deadlines briefly to identify immediate priorities.",
+        "strategy_suggestions": [
+          "Try listing all your current assignments and deadlines on one page, then group them by urgency to see what needs attention first.",
+          "Consider breaking one overwhelming task into a very small first step you can do in 15 minutes to reduce the feeling of being stuck."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "That can feel like school is really weighing on you right now It sounds like your schoolwork is really piling up and making you feel overwhelmed right now.\n\nIf we understand the pattern underneath, the next step usually becomes clearer.\n\nIt seems like overwhelmed is very present right now.\n\nThis may be a protective pattern that got too loud, not something broken in you.\n\nIf we look below the surface, what feels most at stake for you?"
+      },
+      {
+        "session_id": "20260419T021253.086809Z",
+        "created_at": "2026-04-19T03:53:52.250593+00:00",
+        "user_input": "I tried journaling and it didn't help",
+        "emotion": "disappointed",
+        "topic": "coping strategies",
+        "risk_level": "low",
+        "strategy_route": "academic_overload",
+        "session_stage": "follow_up",
+        "strategy_next_step": "Make a quick list of all your assignments and deadlines, then pick one urgent task to break down into a 15-minute first action.",
+        "strategy_suggestions": [
+          "Try listing all your current assignments and deadlines on one page, then group them by urgency to identify what needs immediate attention.",
+          "Consider breaking one overwhelming task into a very small first step you can do in 15 minutes to reduce the feeling of being stuck."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [
+          "journaling"
+        ],
+        "final_response": "It’s frustrating when something you try doesn’t make a difference It sounds frustrating that journaling didn’t bring the relief you hoped for, especially with so much school pressure.\n\nYou put in real effort, and it makes sense to feel frustrated when it still feels this hard.\n\nJournaling alone might not address the immediate overwhelm caused by multiple school tasks and deadlines.\n\nWhat specific part of your schoolwork feels most overwhelming or stuck right now?"
+      }
+    ]
+  }
+}
