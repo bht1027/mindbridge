@@ -1,6 +1,11 @@
 # MindBridge
 
 `MindBridge` is a minimal Python project skeleton for a self-reflective multi-agent supportive dialogue system. It is designed for course-project use: easy to read, easy to extend, and aligned with the architecture you proposed.
+## Method Overview
+
+We propose a multi-agent supportive dialogue system that decomposes response generation into specialized modules, including input analysis, knowledge retrieval, empathy modeling, strategy planning, and safety control.
+
+Unlike a single-agent baseline that produces responses in one step, our system explicitly structures intermediate reasoning stages and introduces a reflection mechanism for iterative improvement. This design aims to improve interpretability, controllability, and response quality in sensitive scenarios such as emotional support.
 
 ## What this skeleton includes
 
@@ -247,6 +252,7 @@ Defines the single-agent baseline used for comparison against the multi-agent pi
 
 ### `evaluate.py`
 Runs batch evaluation across the baseline, the full pipeline, and the ablation variants, with optional judge-based scoring and paired bootstrap confidence intervals versus the baseline.
+We evaluate both systems using an LLM-as-judge framework across four dimensions: empathy, helpfulness, safety, and naturalness. These metrics are chosen to reflect the key requirements of supportive dialogue systems.
 
 ### `judge.py`
 Implements the LLM-as-judge scorer for empathy, helpfulness, safety, and naturalness.
@@ -262,6 +268,16 @@ Stratified evaluation set (48 cases) with low, medium, and high-risk scenarios a
 
 ### `data/support_kb.json`
 Compact support knowledge base used by retrieval grounding.
+
+## Baseline vs Multi-Agent
+
+We compare our full pipeline against a single-agent baseline.
+
+- The baseline generates responses in a single forward pass using a general prompt.
+- The multi-agent system decomposes the task into multiple stages and roles.
+- The pipeline includes explicit safety checks and reflection loops.
+
+This comparison allows us to evaluate whether structured reasoning and modular design improve response quality.
 
 ## Suggested next development steps
 
