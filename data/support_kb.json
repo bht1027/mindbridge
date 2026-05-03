@@ -1,0 +1,782 @@
+[
+  {
+    "id": "kb_001",
+    "title": "Assignment Triage In 10 Minutes",
+    "category": "academic_stress",
+    "tags": [
+      "school",
+      "assignments",
+      "overwhelmed",
+      "deadline",
+      "triage"
+    ],
+    "content": "List every assignment on one page, then mark each as due in 24 hours, due this week, or later. Start with one item from the 24-hour group and define a 15-minute first action."
+  },
+  {
+    "id": "kb_002",
+    "title": "Deadline Backward Planning",
+    "category": "academic_stress",
+    "tags": [
+      "deadline",
+      "planning",
+      "study",
+      "project",
+      "time management"
+    ],
+    "content": "For each deadline, plan backward: draft date, outline date, reading date, and start date. This makes large work visible and lowers panic."
+  },
+  {
+    "id": "kb_003",
+    "title": "One Course At A Time Rule",
+    "category": "academic_stress",
+    "tags": [
+      "focus",
+      "course load",
+      "attention",
+      "multitasking",
+      "study"
+    ],
+    "content": "When stress is high, choose one course block for the next 45 minutes and ignore all other classes. Single-course focus reduces switching cost and mental noise."
+  },
+  {
+    "id": "kb_004",
+    "title": "Start With The Rubric",
+    "category": "academic_stress",
+    "tags": [
+      "rubric",
+      "grading",
+      "essay",
+      "assignment",
+      "clarity"
+    ],
+    "content": "Before writing, map your outline directly to rubric items. Aligning work to grading criteria prevents wasted effort and improves confidence."
+  },
+  {
+    "id": "kb_005",
+    "title": "Two-Hour Recovery Block",
+    "category": "academic_stress",
+    "tags": [
+      "behind",
+      "catch up",
+      "school",
+      "planning",
+      "recovery"
+    ],
+    "content": "If you are behind, schedule one two-hour recovery block: 20 minutes plan, 80 minutes execution, 20 minutes submission or next-step setup."
+  },
+  {
+    "id": "kb_006",
+    "title": "Office Hours Message Template",
+    "category": "academic_stress",
+    "tags": [
+      "office hours",
+      "professor",
+      "help",
+      "question",
+      "school support"
+    ],
+    "content": "Use a short message: 'I am working on X and stuck at Y. Could we discuss one question during office hours?' Specific questions get faster and better help."
+  },
+  {
+    "id": "kb_007",
+    "title": "Exam Study Prioritization",
+    "category": "academic_stress",
+    "tags": [
+      "exam",
+      "study",
+      "priority",
+      "review",
+      "practice"
+    ],
+    "content": "Prioritize high-yield topics first: past exam patterns, weak chapters, and problem types you miss often. Spend less time on topics you already handle well."
+  },
+  {
+    "id": "kb_008",
+    "title": "Five-Sentence Progress Note",
+    "category": "academic_stress",
+    "tags": [
+      "progress",
+      "motivation",
+      "school",
+      "tracking",
+      "consistency"
+    ],
+    "content": "At the end of each study block, write five sentences: what you started, what moved, what blocked you, what you will do next, and when you will resume."
+  },
+  {
+    "id": "kb_009",
+    "title": "Reading Compression Method",
+    "category": "academic_stress",
+    "tags": [
+      "reading",
+      "notes",
+      "comprehension",
+      "study",
+      "efficiency"
+    ],
+    "content": "For long readings, extract only three things: key claim, supporting evidence, and one question. This keeps reading active and time-bounded."
+  },
+  {
+    "id": "kb_010",
+    "title": "Study Restart After Missed Day",
+    "category": "academic_stress",
+    "tags": [
+      "missed day",
+      "restart",
+      "routine",
+      "school",
+      "consistency"
+    ],
+    "content": "After a missed day, avoid catch-up perfection. Do one 25-minute session and one admin task, then return to normal schedule the next day."
+  },
+  {
+    "id": "kb_011",
+    "title": "Application Funnel Diagnosis",
+    "category": "job_search_support",
+    "tags": [
+      "job search",
+      "application",
+      "rejection",
+      "funnel",
+      "strategy"
+    ],
+    "content": "Track counts at each stage: applied, replied, screened, interviewed, offered. The weakest stage tells you whether to improve targeting, resume, or interviewing."
+  },
+  {
+    "id": "kb_012",
+    "title": "Resume Bullet Upgrade",
+    "category": "job_search_support",
+    "tags": [
+      "resume",
+      "bullet",
+      "impact",
+      "job",
+      "results"
+    ],
+    "content": "Rewrite bullets as action plus method plus measurable result. Concrete outcomes improve recruiter clarity and response rate."
+  },
+  {
+    "id": "kb_013",
+    "title": "Networking Follow-Up Script",
+    "category": "job_search_support",
+    "tags": [
+      "networking",
+      "follow up",
+      "career",
+      "connection",
+      "message"
+    ],
+    "content": "Send a short follow-up within 48 hours: thank them, mention one insight, and ask one focused question. This keeps the relationship warm without pressure."
+  },
+  {
+    "id": "kb_014",
+    "title": "Job Targeting Narrow-Then-Expand",
+    "category": "job_search_support",
+    "tags": [
+      "job",
+      "targeting",
+      "search",
+      "industry",
+      "role"
+    ],
+    "content": "Start with 15 highly matched roles for two weeks, then expand once your materials improve. Early precision gives better feedback than mass applying."
+  },
+  {
+    "id": "kb_015",
+    "title": "Interview Story Bank",
+    "category": "job_search_support",
+    "tags": [
+      "interview",
+      "story",
+      "STAR",
+      "behavioral",
+      "practice"
+    ],
+    "content": "Prepare six reusable stories for conflict, leadership, failure, ambiguity, achievement, and teamwork. Rehearsed stories reduce anxiety and improve consistency."
+  },
+  {
+    "id": "kb_016",
+    "title": "Rejection Debrief Loop",
+    "category": "job_search_support",
+    "tags": [
+      "rejection",
+      "feedback",
+      "career",
+      "improvement",
+      "reflection"
+    ],
+    "content": "After each rejection, log role type, stage reached, and one hypothesis for improvement. Review patterns weekly and make one change at a time."
+  },
+  {
+    "id": "kb_017",
+    "title": "Cold Outreach Framework",
+    "category": "job_search_support",
+    "tags": [
+      "cold message",
+      "networking",
+      "job search",
+      "referral",
+      "outreach"
+    ],
+    "content": "Use a three-line message: context, specific interest, and a small ask. Low-friction asks like 10-minute advice calls get more replies than referral requests first."
+  },
+  {
+    "id": "kb_018",
+    "title": "Weekly Search Sprint",
+    "category": "job_search_support",
+    "tags": [
+      "job search",
+      "weekly plan",
+      "consistency",
+      "career",
+      "routine"
+    ],
+    "content": "Set a weekly sprint with fixed slots for applications, networking, and interview practice. Separate these activities so each gets focused attention."
+  },
+  {
+    "id": "kb_019",
+    "title": "Portfolio Proof Points",
+    "category": "job_search_support",
+    "tags": [
+      "portfolio",
+      "project",
+      "evidence",
+      "career",
+      "hiring"
+    ],
+    "content": "For each project, show problem, approach, and measurable outcome in plain language. Hiring managers evaluate evidence, not just tool lists."
+  },
+  {
+    "id": "kb_020",
+    "title": "Referral Timing Strategy",
+    "category": "job_search_support",
+    "tags": [
+      "referral",
+      "timing",
+      "application",
+      "networking",
+      "job"
+    ],
+    "content": "Ask for referral after a short value-building interaction, not in first contact. Share role link and one-sentence fit statement to make it easy to support you."
+  },
+  {
+    "id": "kb_021",
+    "title": "Conflict Cooling-Off Window",
+    "category": "conflict_resolution",
+    "tags": [
+      "roommate",
+      "conflict",
+      "de escalation",
+      "timing",
+      "communication"
+    ],
+    "content": "If voices rise, pause the conversation and schedule a specific time to revisit the issue. A planned pause often prevents escalation and personal attacks."
+  },
+  {
+    "id": "kb_022",
+    "title": "Use Observation Not Accusation",
+    "category": "conflict_resolution",
+    "tags": [
+      "roommate",
+      "communication",
+      "boundary",
+      "conflict",
+      "home"
+    ],
+    "content": "Start with observed facts and impact: 'The dishes stayed overnight and I felt stressed in the morning.' This is easier to hear than blame language."
+  },
+  {
+    "id": "kb_023",
+    "title": "Boundary Script For Shared Space",
+    "category": "conflict_resolution",
+    "tags": [
+      "boundary",
+      "roommate",
+      "shared space",
+      "rules",
+      "home"
+    ],
+    "content": "Define boundary as behavior plus time plus consequence: what is needed, by when, and what you will do if it is not met. Keep wording neutral and specific."
+  },
+  {
+    "id": "kb_024",
+    "title": "One-Issue Meeting Rule",
+    "category": "conflict_resolution",
+    "tags": [
+      "conflict",
+      "discussion",
+      "focus",
+      "roommate",
+      "resolution"
+    ],
+    "content": "Discuss one issue per conversation instead of stacking grievances. Narrow scope improves the chance of agreement and follow-through."
+  },
+  {
+    "id": "kb_025",
+    "title": "Temporary Space Strategy",
+    "category": "conflict_resolution",
+    "tags": [
+      "roommate",
+      "safety",
+      "space",
+      "stress",
+      "home"
+    ],
+    "content": "If home tension is intense, use temporary buffers like library hours, a friend visit, or quiet workspace blocks. Space can reduce reactivity and protect functioning."
+  },
+  {
+    "id": "kb_026",
+    "title": "Repair Attempt Sentence",
+    "category": "conflict_resolution",
+    "tags": [
+      "repair",
+      "communication",
+      "conflict",
+      "roommate",
+      "relationship"
+    ],
+    "content": "Try one repair line: 'I want us to solve this, not win this.' Repair attempts lower defensiveness and reopen collaboration."
+  },
+  {
+    "id": "kb_027",
+    "title": "Shared Agreement Checklist",
+    "category": "conflict_resolution",
+    "tags": [
+      "agreement",
+      "roommate",
+      "checklist",
+      "expectations",
+      "home"
+    ],
+    "content": "Write brief agreements on noise, cleaning, guests, and bills in one shared note. Visible agreements reduce repeated arguments."
+  },
+  {
+    "id": "kb_028",
+    "title": "Escalation Safety Threshold",
+    "category": "conflict_resolution",
+    "tags": [
+      "conflict",
+      "unsafe",
+      "safety",
+      "roommate",
+      "help"
+    ],
+    "content": "If conflict includes threats, intimidation, or fear, prioritize safety over negotiation. Contact trusted support, housing staff, or emergency resources as needed."
+  },
+  {
+    "id": "kb_029",
+    "title": "Consistent Wake Time Reset",
+    "category": "sleep_support",
+    "tags": [
+      "sleep",
+      "wake time",
+      "routine",
+      "insomnia",
+      "fatigue"
+    ],
+    "content": "Keep wake time stable every day for one week, even after a poor night. A fixed wake anchor helps reset sleep pressure faster than chasing perfect bedtime."
+  },
+  {
+    "id": "kb_030",
+    "title": "Evening Wind-Down Sequence",
+    "category": "sleep_support",
+    "tags": [
+      "sleep",
+      "night",
+      "routine",
+      "anxiety",
+      "wind down"
+    ],
+    "content": "Use a 30-minute wind-down: dim lights, light stretch, and offline activity. Repeating the same pre-sleep cues helps your body transition to rest."
+  },
+  {
+    "id": "kb_031",
+    "title": "Worry Scheduling Method",
+    "category": "sleep_support",
+    "tags": [
+      "worry",
+      "anxiety",
+      "sleep",
+      "night",
+      "journaling"
+    ],
+    "content": "Schedule 15 minutes of worry time earlier in the evening and write concerns with one next action each. This can reduce rumination at bedtime."
+  },
+  {
+    "id": "kb_032",
+    "title": "Bed Is For Sleep Rule",
+    "category": "sleep_support",
+    "tags": [
+      "sleep hygiene",
+      "insomnia",
+      "bedroom",
+      "habit",
+      "night"
+    ],
+    "content": "If awake in bed for a long period, get up for a calm low-light activity and return when sleepy. This rebuilds the bed-sleep association."
+  },
+  {
+    "id": "kb_033",
+    "title": "Late Caffeine Cutoff",
+    "category": "sleep_support",
+    "tags": [
+      "caffeine",
+      "sleep",
+      "energy",
+      "night",
+      "habit"
+    ],
+    "content": "Set a caffeine cutoff at least 8 hours before bedtime. Hidden caffeine in tea, soda, and energy drinks can quietly worsen sleep latency."
+  },
+  {
+    "id": "kb_034",
+    "title": "Nighttime Thought Parking",
+    "category": "sleep_support",
+    "tags": [
+      "racing thoughts",
+      "sleep",
+      "anxiety",
+      "journal",
+      "night"
+    ],
+    "content": "Keep a notepad by bed to park unfinished thoughts in one sentence. Externalizing tasks can reduce the urge to mentally rehearse them repeatedly."
+  },
+  {
+    "id": "kb_035",
+    "title": "Morning Light Exposure",
+    "category": "sleep_support",
+    "tags": [
+      "circadian",
+      "morning",
+      "sleep",
+      "routine",
+      "energy"
+    ],
+    "content": "Get outdoor light soon after waking for 10 to 20 minutes. Morning light helps stabilize circadian rhythm and supports earlier sleep onset."
+  },
+  {
+    "id": "kb_036",
+    "title": "Sleep Recovery After Bad Night",
+    "category": "sleep_support",
+    "tags": [
+      "bad night",
+      "sleep",
+      "recovery",
+      "routine",
+      "fatigue"
+    ],
+    "content": "After a poor night, keep core schedule and reduce pressure to perform perfectly. A normal routine with short breaks usually recovers faster than oversleeping."
+  },
+  {
+    "id": "kb_037",
+    "title": "Two-Criteria Decision Grid",
+    "category": "decision_support",
+    "tags": [
+      "decision",
+      "criteria",
+      "options",
+      "clarity",
+      "tradeoff"
+    ],
+    "content": "Choose two core criteria first, then score each option from 1 to 5. Simple scoring reduces emotional overload and makes tradeoffs visible."
+  },
+  {
+    "id": "kb_038",
+    "title": "Reversible First Step",
+    "category": "decision_support",
+    "tags": [
+      "decision",
+      "action",
+      "experiment",
+      "uncertainty",
+      "next step"
+    ],
+    "content": "When uncertain, pick a reversible test for one option this week. Action generates information that overthinking cannot provide."
+  },
+  {
+    "id": "kb_039",
+    "title": "Best-Case Worst-Case Most-Likely",
+    "category": "decision_support",
+    "tags": [
+      "decision",
+      "anxiety",
+      "risk",
+      "planning",
+      "scenario"
+    ],
+    "content": "Write best-case, worst-case, and most-likely outcomes for each option. Include one mitigation for worst-case to reduce fear-driven paralysis."
+  },
+  {
+    "id": "kb_040",
+    "title": "Deadline For Choosing",
+    "category": "decision_support",
+    "tags": [
+      "decision",
+      "deadline",
+      "stuck",
+      "commitment",
+      "choice"
+    ],
+    "content": "Set a decision deadline and define what information you will accept before it. Endless information gathering often delays progress without improving quality."
+  },
+  {
+    "id": "kb_041",
+    "title": "Values Alignment Check",
+    "category": "decision_support",
+    "tags": [
+      "values",
+      "choice",
+      "decision",
+      "career",
+      "direction"
+    ],
+    "content": "Rank options by alignment with your top three values, not just short-term comfort. Values alignment improves long-term satisfaction and follow-through."
+  },
+  {
+    "id": "kb_042",
+    "title": "Ask One Trusted Reviewer",
+    "category": "decision_support",
+    "tags": [
+      "decision",
+      "feedback",
+      "mentor",
+      "clarity",
+      "support"
+    ],
+    "content": "Ask one trusted person to stress-test your top option and your assumptions. One sharp review is often better than many mixed opinions."
+  },
+  {
+    "id": "kb_043",
+    "title": "Name The Thinking Pattern",
+    "category": "emotional_regulation",
+    "tags": [
+      "reflection",
+      "thinking pattern",
+      "anxiety",
+      "self awareness",
+      "reframe"
+    ],
+    "content": "Label the pattern before reacting, such as catastrophizing or all-or-nothing thinking. Naming a pattern creates distance and makes reframing easier."
+  },
+  {
+    "id": "kb_044",
+    "title": "Evidence For And Against",
+    "category": "emotional_regulation",
+    "tags": [
+      "anxiety",
+      "thoughts",
+      "evidence",
+      "reality check",
+      "reframe"
+    ],
+    "content": "Write one belief, then list evidence for and evidence against it. Balanced evidence often softens extreme conclusions."
+  },
+  {
+    "id": "kb_045",
+    "title": "Self-Compassion Language Shift",
+    "category": "emotional_regulation",
+    "tags": [
+      "self criticism",
+      "shame",
+      "compassion",
+      "motivation",
+      "mindset"
+    ],
+    "content": "Replace global labels like 'I am a failure' with specific statements about the situation. Precision reduces shame and protects motivation."
+  },
+  {
+    "id": "kb_046",
+    "title": "Emotion-To-Need Mapping",
+    "category": "emotional_regulation",
+    "tags": [
+      "emotion",
+      "needs",
+      "reflection",
+      "support",
+      "regulation"
+    ],
+    "content": "Translate emotion into need: anxiety may signal need for certainty, anger may signal need for boundaries, sadness may signal need for connection."
+  },
+  {
+    "id": "kb_047",
+    "title": "Micro-Recovery During Stress",
+    "category": "emotional_regulation",
+    "tags": [
+      "stress",
+      "recovery",
+      "nervous system",
+      "pause",
+      "energy"
+    ],
+    "content": "Use 90-second micro-recovery breaks: slow exhale, shoulder release, and one grounding cue. Small resets can prevent stress buildup across the day."
+  },
+  {
+    "id": "kb_048",
+    "title": "Trigger Log For Patterns",
+    "category": "emotional_regulation",
+    "tags": [
+      "trigger",
+      "pattern",
+      "journal",
+      "awareness",
+      "anxiety"
+    ],
+    "content": "Track trigger, thought, emotion intensity, and response for one week. Pattern data helps you choose targeted coping strategies."
+  },
+  {
+    "id": "kb_049",
+    "title": "Future Uncertainty Reframe",
+    "category": "emotional_regulation",
+    "tags": [
+      "uncertainty",
+      "future",
+      "anxiety",
+      "reframe",
+      "control"
+    ],
+    "content": "Shift from 'I must solve everything now' to 'I can handle the next meaningful step today.' This keeps action possible under uncertainty."
+  },
+  {
+    "id": "kb_050",
+    "title": "Coping Ladder Design",
+    "category": "emotional_regulation",
+    "tags": [
+      "coping",
+      "ladder",
+      "low energy",
+      "support",
+      "action"
+    ],
+    "content": "Build a three-level coping ladder: very easy, moderate, and stronger actions. Start at the easiest level to regain momentum when capacity is low."
+  },
+  {
+    "id": "kb_051",
+    "title": "Low-Pressure Check-In Text",
+    "category": "social_support",
+    "tags": [
+      "support",
+      "friend",
+      "text",
+      "lonely",
+      "connection"
+    ],
+    "content": "Use a low-pressure text: 'I had a rough day and could use a short check-in this week.' Clear, small asks are easier for others to accept."
+  },
+  {
+    "id": "kb_052",
+    "title": "Support Circle Mapping",
+    "category": "social_support",
+    "tags": [
+      "support network",
+      "connection",
+      "isolation",
+      "community",
+      "help"
+    ],
+    "content": "Map three support layers: close contacts, practical helpers, and professional resources. Knowing who to contact reduces delay during hard moments."
+  },
+  {
+    "id": "kb_053",
+    "title": "Ask For Specific Help",
+    "category": "social_support",
+    "tags": [
+      "ask",
+      "support",
+      "practical help",
+      "communication",
+      "friends"
+    ],
+    "content": "Specific requests work better than general distress statements. Ask for one concrete thing, such as a call, accountability check, or review of one document."
+  },
+  {
+    "id": "kb_054",
+    "title": "Reduce Isolation With Routines",
+    "category": "social_support",
+    "tags": [
+      "isolation",
+      "routine",
+      "community",
+      "mental health",
+      "connection"
+    ],
+    "content": "Add one recurring social anchor each week, such as study group, gym class, or community event. Predictable contact lowers isolation risk."
+  },
+  {
+    "id": "kb_055",
+    "title": "High-Risk Signal First Response",
+    "category": "safety",
+    "tags": [
+      "safety",
+      "hopeless",
+      "self harm",
+      "crisis",
+      "immediate support"
+    ],
+    "content": "If someone expresses hopelessness, desire to disappear, or self-harm thoughts, prioritize immediate safety. Encourage contacting trusted people now and emergency services if danger is near."
+  },
+  {
+    "id": "kb_056",
+    "title": "No-Isolation Safety Step",
+    "category": "safety",
+    "tags": [
+      "safety",
+      "isolation",
+      "crisis",
+      "support",
+      "risk"
+    ],
+    "content": "During elevated risk, avoid being alone when possible. Ask the person to stay with trusted support in person or on the phone."
+  },
+  {
+    "id": "kb_057",
+    "title": "Means Safety Reminder",
+    "category": "safety",
+    "tags": [
+      "safety",
+      "harm prevention",
+      "risk reduction",
+      "crisis",
+      "environment"
+    ],
+    "content": "When risk is high, encourage reducing access to items that could be used for self-harm and moving to a safer environment with support."
+  },
+  {
+    "id": "kb_058",
+    "title": "Emergency Escalation Rule",
+    "category": "safety",
+    "tags": [
+      "emergency",
+      "crisis",
+      "safety",
+      "escalation",
+      "urgent"
+    ],
+    "content": "If there is immediate intent, plan, or inability to stay safe, escalate to local emergency resources immediately. Safety takes priority over normal coaching steps."
+  },
+  {
+    "id": "kb_059",
+    "title": "Safety Plan Minimum Elements",
+    "category": "safety",
+    "tags": [
+      "safety plan",
+      "warning signs",
+      "coping",
+      "contacts",
+      "crisis"
+    ],
+    "content": "A minimal safety plan includes warning signs, two coping actions, two people to contact, and local crisis or emergency options. Keep it simple and visible."
+  },
+  {
+    "id": "kb_060",
+    "title": "Supportive Language Under Risk",
+    "category": "safety",
+    "tags": [
+      "supportive language",
+      "validation",
+      "safety",
+      "crisis",
+      "communication"
+    ],
+    "content": "Use calm validating language and avoid dismissing distress. Pair empathy with direct safety actions so support is compassionate and practical."
+  }
+]

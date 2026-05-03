@@ -1,0 +1,94 @@
+{
+  "Fiona": {
+    "profile_id": "Fiona",
+    "active_session_id": "20260410T021008.728318Z",
+    "updated_at": "2026-04-10T02:27:58.431010+00:00",
+    "turns": 4,
+    "user_state": {
+      "main_stressor": "emotional state",
+      "emotion": "happy",
+      "risk_level": "low",
+      "session_stage": "rapport_and_safety",
+      "stage_goal": "Build emotional safety and trust before problem-solving.",
+      "last_strategy": "Invite you to specify which part you'd like me to remind you about or if there's a particular feeling or moment you want to revisit.",
+      "last_strategy_method": "",
+      "strategy_methods": [],
+      "failed_methods": [],
+      "last_reflection": "The user is seeking reassurance and clarity about past conversation points to feel more grounded in the dialogue."
+    },
+    "history": [
+      {
+        "session_id": "20260410T020852.554494Z",
+        "created_at": "2026-04-10T02:09:14.010719+00:00",
+        "user_input": "Hi, My name is Fiona",
+        "emotion": "neutral",
+        "topic": "greeting",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "rapport_and_safety",
+        "strategy_next_step": "Invite Fiona to share what brought her here or what she hopes to gain from this conversation.",
+        "strategy_suggestions": [
+          "Invite Fiona to share a bit about what brought her here or what she hopes to gain from this conversation.",
+          "Gently ask if there is anything on her mind she would like to talk about or any support she feels she might need."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "Hi Fiona, it’s nice to meet you Thanks for introducing yourself, Fiona—it's great to meet you and I'm here to support you however you need.\n\nWe can move at your pace here.\n\nWhat feels most intense right now?\n\nIf you want, we can look at one specific moment together."
+      },
+      {
+        "session_id": "20260410T020852.554494Z",
+        "created_at": "2026-04-10T02:09:34.819836+00:00",
+        "user_input": "I feel happy now",
+        "emotion": "happy",
+        "topic": "emotional state",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "problem_exploration",
+        "strategy_next_step": "Gently ask the user to share what specifically led to their happy feeling to deepen understanding.",
+        "strategy_suggestions": [
+          "Explore the specific moment or trigger that brought on this happy feeling to understand it better.",
+          "Reflect on how this positive feeling might influence what you want to focus on or talk about next."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I'm really glad to hear you're feeling happy right now It sounds like you're enjoying a really good moment right now—what do you think made you feel this way?\n\nLet's slow this down and make the picture clearer first.\n\nIf we zoom in, what part hurts most right now?"
+      },
+      {
+        "session_id": "20260410T021008.728318Z",
+        "created_at": "2026-04-10T02:10:30.757109+00:00",
+        "user_input": "Hi, do you remind me",
+        "emotion": "curious",
+        "topic": "memory recall",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "emotion_identification",
+        "strategy_next_step": "Invite you to specify which part you'd like me to remind you about or if there's a particular feeling or moment you want to revisit.",
+        "strategy_suggestions": [
+          "I can gently recap what we've talked about so far, focusing on your feelings and what you shared about happiness.",
+          "We could also revisit any specific moment or insight you want to explore more deeply."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I do remember earlier in this profile: we were discussing emotional state.\n\nYou’re curious about whether I remember something from before, and that shows you’re engaged in our conversation It sounds like you’re curious about what I remember from our chat, and that curiosity shows you’re really engaged in what we’re exploring together.\n\nNaming the feeling often makes it less overwhelming.\n\nIt seems like curious is very present right now.\n\nUnder the stress, what feeling is most present for you right now?"
+      },
+      {
+        "session_id": "20260410T021008.728318Z",
+        "created_at": "2026-04-10T02:27:58.427832+00:00",
+        "user_input": "I happy now",
+        "emotion": "happy",
+        "topic": "emotional state",
+        "risk_level": "low",
+        "strategy_route": "general_support",
+        "session_stage": "rapport_and_safety",
+        "strategy_next_step": "Invite you to specify which part you'd like me to remind you about or if there's a particular feeling or moment you want to revisit.",
+        "strategy_suggestions": [
+          "I can gently recap what we've talked about so far, focusing on your feelings and what you shared about happiness.",
+          "We could revisit any specific moment or insight you want to explore more deeply."
+        ],
+        "strategy_methods": [],
+        "failed_methods_snapshot": [],
+        "final_response": "I remember you asked if I could remind you about something from our conversation It sounds like you're really interested in making sure we're both clear on what we've talked about so far, which is a great way to stay connected.\n\nI am glad to hear that this moment feels a little lighter.\n\nThat is good to hear. What do you think helped this shift happen today?\n\nIf you want, we can note one small thing that helped today so you can return to it later."
+      }
+    ]
+  }
+}
