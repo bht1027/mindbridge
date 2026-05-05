@@ -197,6 +197,8 @@ python evaluate.py
 python evaluate.py --judge-model gpt-4.1-mini
 python evaluate.py --skip-judge
 python evaluate.py --bootstrap-samples 5000
+python evaluate.py --pairwise-judge
+python evaluate.py --cases data/eval_cases_multiturn.json --skip-judge --runners pipeline_full
 ```
 
 By default it saves:
@@ -207,13 +209,18 @@ By default it saves:
 Reproducible helper scripts:
 
 ```bash
+./scripts/run_smoke_checks.sh
 ./scripts/run_eval_fast.sh
 ./scripts/run_eval_full.sh
+./scripts/run_eval_multiturn.sh
 ```
 
-`run_eval_fast.sh` skips the LLM judge for quick checks. `run_eval_full.sh` runs judge scoring, bootstrap CI, and qualitative sections.
+`run_smoke_checks.sh` validates Python syntax, JSON data, and CLI help without needing an API key.
+`run_eval_fast.sh` skips the LLM judge for quick checks.
+`run_eval_full.sh` runs judge scoring, pairwise baseline comparison, bootstrap CI, and qualitative sections.
+`run_eval_multiturn.sh` checks memory, failed-advice follow-up, and safety edge cases.
 
-## Rubric Alignment (Evaluation 4.3)
+## Evaluation Coverage
 
 - Quantitative metrics:
   - runtime and response-length summaries (`runtime_summary`)
@@ -274,6 +281,9 @@ Defines the shared `DialogueState` object used to store intermediate outputs.
 ### `data/eval_cases.json`
 Stratified evaluation set (48 cases) with low, medium, and high-risk scenarios across diverse categories.
 
+### `data/eval_cases_multiturn.json`
+Multi-turn edge cases for memory recall, failed-advice follow-up, high-risk escalation, false-positive safety boundaries, and unsafe-home scenarios.
+
 ### `data/support_kb.json`
 Compact support knowledge base used by retrieval grounding.
 
@@ -281,7 +291,7 @@ Compact support knowledge base used by retrieval grounding.
 Report-support templates and checklist files for quantitative and qualitative evaluation writeups.
 
 ### `docs/results.md`
-Saved evaluation output from a prior full run.
+Saved evaluation output from a prior full run plus the latest agent-improvement smoke evaluation summary.
 
 ## Baseline vs Multi-Agent
 
@@ -293,69 +303,19 @@ We compare our full pipeline against a single-agent baseline.
 
 This comparison allows us to evaluate whether structured reasoning and modular design improve response quality.
 
-## Suggested next development steps
-
-### 1. Improve prompt quality
-
-Right now the prompts are intentionally simple. Your next iteration should:
-
-- sharpen each agent's role boundary
-- define clearer output labels
-- add one or two few-shot examples for difficult cases
-
-### 2. Add a baseline
-
-Create a single-agent baseline script so you can compare:
-
-- single-agent baseline
-- multi-agent without reflection
-- full multi-agent with reflection
-
-### 3. Add evaluation scripts
-
-Useful scripts to add next:
-
-- `run_baseline.py`
-- `run_ablation.py`
-- `judge.py`
-- `metrics.py`
-
-Then evaluate on:
-
-- empathy
-- helpfulness
-- safety
-- coherence
-
-### 4. Add safety routing
-
-For high-risk cases, add explicit routing logic such as:
-
-- reduce normal advice
-- prioritize supportive and immediate safety language
-- provide crisis-oriented guidance templates
-
 ## Notes and limitations
 
 - This scaffold is for research and class-project prototyping.
 - It is not a production mental-health support system.
 - The current implementation depends heavily on prompt design and API behavior.
-- The JSON parsing is intentionally lightweight; you may want stronger schema validation later.
-
-## Recommended report framing
-
-When describing this implementation in your report, emphasize:
-
-- role specialization for interpretability
-- structured intermediate outputs for analysis
-- reflection for iterative improvement
-- safety constraints as a dedicated module rather than an afterthought
+- The evaluation uses an LLM judge; human annotation would provide stronger validity.
+- Safety coverage is demonstrated through scripted cases, not exhaustive clinical red-team testing.
 
 ## Quick checklist
 
 - [ ] Fill in `.env`
 - [ ] Run the CLI once
-- [ ] Test on the sample cases in `data/eval_cases.json`
-- [ ] Tighten prompts
-- [ ] Add baseline and evaluation scripts
-- [ ] Prepare case-study examples for the final presentation
+- [ ] Run `./scripts/run_smoke_checks.sh`
+- [ ] Test sample cases in `data/eval_cases.json`
+- [ ] Test multi-turn cases in `data/eval_cases_multiturn.json`
+- [ ] Regenerate full evaluation results with `./scripts/run_eval_full.sh`

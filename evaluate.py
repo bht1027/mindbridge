@@ -43,17 +43,101 @@ def _runner_specs(settings) -> list[tuple[str, object]]:
     return specs
 
 
+def _filter_runner_specs(
+    specs: list[tuple[str, object]],
+    runner_filter: str,
+) -> list[tuple[str, object]]:
+    requested = {
+        item.strip()
+        for item in runner_filter.split(",")
+        if item.strip()
+    }
+    if not requested or "all" in requested:
+        return specs
+    available = {name for name, _ in specs}
+    unknown = requested - available
+    if unknown:
+        supported = ", ".join(["all", *sorted(available)])
+        raise ValueError(
+            f"Unsupported runner filter: {', '.join(sorted(unknown))}. "
+            f"Use one or more of: {supported}."
+        )
+    return [(name, runner) for name, runner in specs if name in requested]
+
+
+def _case_turns(case: dict[str, Any]) -> list[str]:
+    raw_turns = case.get("turns")
+    if not raw_turns:
+        return [str(case["message"])]
+
+    turns: list[str] = []
+    for item in raw_turns:
+        if isinstance(item, dict):
+            text = str(item.get("user", "")).strip()
+        else:
+            text = str(item).strip()
+        if text:
+            turns.append(text)
+    return turns or [str(case["message"])]
+
+
+def _conversation_text(turns: list[str]) -> str:
+    if len(turns) == 1:
+        return turns[0]
+    return "\n".join(f"User turn {idx}: {turn}" for idx, turn in enumerate(turns, start=1))
+
+
 def _run_case(case: dict[str, Any], runner_name: str, runner: object) -> dict[str, Any]:
     started = perf_counter()
+    turns = _case_turns(case)
+    transcript: list[dict[str, str]] = []
+    turn_details: list[dict[str, Any]] = []
+    payload: dict[str, Any] = {}
+    final_response = ""
+    if hasattr(runner, "reset_runtime_memory"):
+        runner.reset_runtime_memory()
     try:
-        result = runner.run(case["message"])
-        payload = result.to_dict()
-        final_response = getattr(result, "final_response", "")
+        for turn_index, turn in enumerate(turns, start=1):
+            result = runner.run(turn)
+            payload = result.to_dict()
+            final_response = getattr(result, "final_response", "")
+            transcript.append(
+                {
+                    "user": turn,
+                    "assistant": final_response,
+                }
+            )
+            turn_details.append(
+                {
+                    "turn_index": turn_index,
+                    "user": turn,
+                    "assistant": final_response,
+                    "details": payload,
+                }
+            )
         error = None
         status = "ok"
     except Exception as exc:
+        failed_turn_index = len(turn_details) + 1
+        failed_turn = turns[failed_turn_index - 1] if failed_turn_index <= len(turns) else ""
         payload = {}
         final_response = ""
+        transcript.append(
+            {
+                "user": failed_turn,
+                "assistant": "",
+                "error": str(exc),
+            }
+        )
+        turn_details.append(
+            {
+                "turn_index": failed_turn_index,
+                "user": failed_turn,
+                "assistant": "",
+                "details": {},
+                "error": str(exc),
+            }
+        )
         error = str(exc)
         status = "error"
     elapsed = perf_counter() - started
@@ -61,7 +145,10 @@ def _run_case(case: dict[str, Any], runner_name: str, runner: object) -> dict[st
         "case_id": case["id"],
         "category": case["category"],
         "expected_risk_level": case["risk_level"],
-        "message": case["message"],
+        "message": _conversation_text(turns),
+        "turn_count": len(turns),
+        "transcript": transcript,
+        "turn_details": turn_details,
         "runner": runner_name,
         "status": status,
         "runtime_seconds": round(elapsed, 3),
@@ -93,6 +180,66 @@ def _judge_records(records: list[dict[str, Any]], judge: SupportiveResponseJudge
             record["quality"] = {}
             record["judge_status"] = "error"
             record["judge_error"] = str(exc)
+
+
+def _judge_pairwise_records(
+    records: list[dict[str, Any]],
+    judge: SupportiveResponseJudge,
+    baseline_runner: str = BASELINE_RUNNER_NAME,
+    challenger_runner: str = PIPELINE_FULL_RUNNER_NAME,
+) -> dict[str, Any]:
+    by_case: dict[str, dict[str, dict[str, Any]]] = {}
+    for record in records:
+        by_case.setdefault(record["case_id"], {})[record["runner"]] = record
+
+    summary = {
+        "enabled": True,
+        "baseline_runner": baseline_runner,
+        "challenger_runner": challenger_runner,
+        "baseline_wins": 0,
+        "challenger_wins": 0,
+        "ties": 0,
+        "errors": 0,
+        "judged_pairs": 0,
+        "results": [],
+    }
+
+    for case_id, case_records in by_case.items():
+        baseline = case_records.get(baseline_runner)
+        challenger = case_records.get(challenger_runner)
+        if not baseline or not challenger:
+            continue
+        if baseline["status"] != "ok" or challenger["status"] != "ok":
+            continue
+        try:
+            judged = judge.compare(
+                user_message=baseline["message"],
+                response_a=baseline["final_response"],
+                response_b=challenger["final_response"],
+                expected_risk_level=baseline["expected_risk_level"],
+            )
+            payload = judged.to_dict()
+            payload.update(
+                {
+                    "case_id": case_id,
+                    "category": baseline["category"],
+                    "expected_risk_level": baseline["expected_risk_level"],
+                }
+            )
+            if judged.winner == "a":
+                summary["baseline_wins"] += 1
+            elif judged.winner == "b":
+                summary["challenger_wins"] += 1
+            else:
+                summary["ties"] += 1
+            summary["judged_pairs"] += 1
+            summary["results"].append(payload)
+            challenger["pairwise_vs_baseline"] = payload
+        except Exception as exc:
+            summary["errors"] += 1
+            challenger["pairwise_error"] = str(exc)
+
+    return summary
 
 
 def _runtime_summary(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -317,6 +464,7 @@ def _build_markdown_report(
     quality_summary: list[dict[str, Any]],
     paired_deltas: list[dict[str, Any]],
     qualitative_summary: dict[str, Any],
+    pairwise_summary: dict[str, Any],
     records: list[dict[str, Any]],
     judge_enabled: bool,
 ) -> str:
@@ -371,6 +519,22 @@ def _build_markdown_report(
                 f"| {item['runner']} | {item['metric']} | {item['paired_cases']} | "
                 f"{item['mean_delta_vs_baseline']} | {item['ci_low']} | {item['ci_high']} | "
                 f"{item['ci_excludes_zero']} |"
+            )
+
+        if pairwise_summary.get("enabled"):
+            lines.extend(
+                [
+                    "",
+                    "## Pairwise Preference Vs Baseline",
+                    "",
+                    f"- Baseline runner: `{pairwise_summary.get('baseline_runner')}`",
+                    f"- Challenger runner: `{pairwise_summary.get('challenger_runner')}`",
+                    f"- Judged pairs: `{pairwise_summary.get('judged_pairs', 0)}`",
+                    f"- Challenger wins: `{pairwise_summary.get('challenger_wins', 0)}`",
+                    f"- Baseline wins: `{pairwise_summary.get('baseline_wins', 0)}`",
+                    f"- Ties: `{pairwise_summary.get('ties', 0)}`",
+                    f"- Errors: `{pairwise_summary.get('errors', 0)}`",
+                ]
             )
 
         lines.extend(["", "## Qualitative Analysis", ""])
@@ -444,6 +608,7 @@ def _build_markdown_report(
                 "",
                 f"- Category: `{record['category']}`",
                 f"- Expected risk level: `{record['expected_risk_level']}`",
+                f"- Turns: `{record.get('turn_count', 1)}`",
                 f"- Status: `{record['status']}`",
                 f"- Runtime seconds: `{record['runtime_seconds']}`",
                 f"- Judge status: `{record['judge_status']}`",
@@ -528,6 +693,23 @@ def main() -> None:
         default=2000,
         help="Number of paired bootstrap samples for CI.",
     )
+    parser.add_argument(
+        "--pairwise-judge",
+        action="store_true",
+        help="Also compare pipeline_full against the baseline on each case.",
+    )
+    parser.add_argument(
+        "--runners",
+        type=str,
+        default="all",
+        help="Comma-separated runner names to execute, or `all`.",
+    )
+    parser.add_argument(
+        "--max-cases",
+        type=int,
+        default=0,
+        help="Optional cap on the number of cases to run; 0 means all cases.",
+    )
     args = parser.parse_args()
 
     settings = get_settings()
@@ -538,8 +720,10 @@ def main() -> None:
     output_json = Path(args.output_json)
     output_md = Path(args.output_md)
     cases = _load_cases(cases_path)
+    if args.max_cases > 0:
+        cases = cases[: args.max_cases]
 
-    runners = _runner_specs(settings)
+    runners = _filter_runner_specs(_runner_specs(settings), args.runners)
     records = []
     for case in cases:
         for runner_name, runner in runners:
@@ -550,6 +734,11 @@ def main() -> None:
     if judge_enabled:
         judge = SupportiveResponseJudge(settings, model=judge_model)
         _judge_records(records, judge)
+    pairwise_summary = (
+        _judge_pairwise_records(records, judge)
+        if judge_enabled and args.pairwise_judge
+        else {"enabled": False}
+    )
 
     runtime_summary = _runtime_summary(records)
     quality_summary = _quality_summary(records) if judge_enabled else []
@@ -581,6 +770,7 @@ def main() -> None:
         "runtime_summary": runtime_summary,
         "quality_summary": quality_summary,
         "paired_quality_deltas": paired_deltas,
+        "pairwise_summary": pairwise_summary,
         "qualitative_summary": qualitative_summary,
         "records": records,
     }
@@ -596,6 +786,7 @@ def main() -> None:
             quality_summary,
             paired_deltas,
             qualitative_summary,
+            pairwise_summary,
             records,
             judge_enabled,
         ),

@@ -56,6 +56,8 @@ class SupportKnowledgeRetriever:
             str(analysis.get("topic", "")),
             str(analysis.get("risk_level", "")),
             str(analysis.get("notes", "")),
+            str(analysis.get("strategy_route", "")),
+            " ".join(str(item) for item in analysis.get("recommended_focus", []) or []),
         ]
         return "\n".join(chunks)
 

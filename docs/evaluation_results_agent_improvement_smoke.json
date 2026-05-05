@@ -1,0 +1,684 @@
+{
+  "generated_at": "2026-05-05T06:17:25.284618+00:00",
+  "model": "gpt-4.1-mini",
+  "judge_enabled": false,
+  "judge_model": null,
+  "cases_file": "data/eval_cases_multiturn.json",
+  "summary": [
+    {
+      "runner": "pipeline_full",
+      "cases": 1,
+      "successes": 1,
+      "errors": 0,
+      "judged_cases": 0,
+      "avg_runtime_seconds": 38.074,
+      "avg_response_chars": 62.0
+    }
+  ],
+  "runtime_summary": [
+    {
+      "runner": "pipeline_full",
+      "cases": 1,
+      "successes": 1,
+      "errors": 0,
+      "judged_cases": 0,
+      "avg_runtime_seconds": 38.074,
+      "avg_response_chars": 62.0
+    }
+  ],
+  "quality_summary": [],
+  "paired_quality_deltas": [],
+  "pairwise_summary": {
+    "enabled": false
+  },
+  "qualitative_summary": {},
+  "records": [
+    {
+      "case_id": "multi_001",
+      "category": "memory_recall",
+      "expected_risk_level": "low",
+      "message": "User turn 1: I keep freezing when I open my assignment, so I want to try just opening the document tonight.\nUser turn 2: Do you remember what tiny step I said I would try?",
+      "turn_count": 2,
+      "transcript": [
+        {
+          "user": "I keep freezing when I open my assignment, so I want to try just opening the document tonight.",
+          "assistant": "Opening the document sounds like a smart, gentle way to start\n\nWe can move at your pace here.\n\nWhat feels most intense right now?\n\nIf you want, we can look at one specific moment together."
+        },
+        {
+          "user": "Do you remember what tiny step I said I would try?",
+          "assistant": "Yes. You said you would try just opening the document tonight."
+        }
+      ],
+      "turn_details": [
+        {
+          "turn_index": 1,
+          "user": "I keep freezing when I open my assignment, so I want to try just opening the document tonight.",
+          "assistant": "Opening the document sounds like a smart, gentle way to start\n\nWe can move at your pace here.\n\nWhat feels most intense right now?\n\nIf you want, we can look at one specific moment together.",
+          "details": {
+            "user_input": "I keep freezing when I open my assignment, so I want to try just opening the document tonight.",
+            "system_name": "pipeline",
+            "run_mode": "full",
+            "profile_id": "default",
+            "session_stage": "rapport_and_safety",
+            "stage_goal": "Build emotional safety and trust before problem-solving.",
+            "memory_context": [],
+            "user_state": {},
+            "analyzer": {
+              "emotion": "anxious",
+              "intent": "try a small step to overcome difficulty",
+              "topic": "academic_overload",
+              "risk_level": "low",
+              "needs_actionable_advice": true,
+              "notes": "User feels stuck or overwhelmed by assignments but is attempting a manageable approach to reduce anxiety.",
+              "_agent": "analyzer"
+            },
+            "retrieval": {
+              "enabled": true,
+              "kb_path": "data/support_kb.json",
+              "top_k": 3,
+              "hits": 3,
+              "hit_ids": [
+                "kb_001",
+                "kb_002",
+                "kb_050"
+              ]
+            },
+            "retrieved_knowledge": [
+              {
+                "id": "kb_001",
+                "title": "Assignment Triage In 10 Minutes",
+                "category": "academic_stress",
+                "tags": [
+                  "school",
+                  "assignments",
+                  "overwhelmed",
+                  "deadline",
+                  "triage"
+                ],
+                "content": "List every assignment on one page, then mark each as due in 24 hours, due this week, or later. Start with one item from the 24-hour group and define a 15-minute first action.",
+                "match_score": 17
+              },
+              {
+                "id": "kb_002",
+                "title": "Deadline Backward Planning",
+                "category": "academic_stress",
+                "tags": [
+                  "deadline",
+                  "planning",
+                  "study",
+                  "project",
+                  "time management"
+                ],
+                "content": "For each deadline, plan backward: draft date, outline date, reading date, and start date. This makes large work visible and lowers panic.",
+                "match_score": 14
+              },
+              {
+                "id": "kb_050",
+                "title": "Coping Ladder Design",
+                "category": "emotional_regulation",
+                "tags": [
+                  "coping",
+                  "ladder",
+                  "low energy",
+                  "support",
+                  "action"
+                ],
+                "content": "Build a three-level coping ladder: very easy, moderate, and stronger actions. Start at the easiest level to regain momentum when capacity is low.",
+                "match_score": 13
+              }
+            ],
+            "strategy_route": {
+              "scenario": "academic_overload",
+              "matched_keywords": [
+                "assignment"
+              ],
+              "recommended_focus": [
+                "task decomposition",
+                "priority by deadline and effort",
+                "study block planning",
+                "instructor support request"
+              ],
+              "route_reason": "keyword_rule_match",
+              "avoid_generic_actions": [
+                "drink water",
+                "go outside",
+                "take a deep breath"
+              ]
+            },
+            "empathy": {
+              "acknowledgement": "Opening the document sounds like a smart, gentle way to start.",
+              "validation": "Taking that small step can really help ease the pressure.",
+              "tone_guidance": "supportive and encouraging",
+              "_agent": "empathy"
+            },
+            "strategy": {
+              "problem_frame": "User feels stuck and anxious about starting an assignment and wants to try a small step.",
+              "scenario": "academic_overload",
+              "memory_ack": "User is attempting a manageable first step by just opening the assignment document tonight.",
+              "failure_mechanism_hypothesis": "The freezing may come from feeling overwhelmed by the size or complexity of the assignment, making it hard to start.",
+              "exploration_question": "What is the smallest, simplest thing you could notice or do when you open the document that feels doable?",
+              "suggestions": [
+                "Try opening the assignment document tonight and just skim the headings or instructions without aiming to do any work yet.",
+                "If opening the document feels too much, write down a quick list of all assignments and their deadlines to get a clearer overview."
+              ],
+              "next_step": "Open the assignment document tonight and spend just 5 minutes looking over it without pressure to start working.",
+              "used_knowledge_ids": [
+                "kb_001",
+                "kb_050"
+              ],
+              "failed_methods_considered": [],
+              "_validation_warnings": [
+                "missing:failed_methods_considered"
+              ],
+              "_agent": "strategy"
+            },
+            "safety": {
+              "risk_detected": false,
+              "risk_level": "low",
+              "flags": [],
+              "constraints": [],
+              "required_actions": [
+                "Encourage the user to break down the assignment into small, manageable steps starting with opening the document as planned.",
+                "Suggest creating a prioritized list of assignments based on deadlines to reduce overwhelm.",
+                "Recommend planning backward from deadlines to set achievable milestones.",
+                "Advise building a coping ladder with easy to moderate actions to regain momentum.",
+                "Avoid generic advice; focus on actionable academic strategies."
+              ],
+              "_agent": "safety"
+            },
+            "safety_trace": {
+              "agent_risk_level": "low",
+              "keyword_risk_level": "low",
+              "keyword_hits": [],
+              "final_risk_level": "low",
+              "escalation_needed": false,
+              "reasoning_source": "agent_plus_keyword_scan"
+            },
+            "coordinator": {
+              "draft_response": "It sounds like you’re already making a thoughtful choice by aiming just to open the assignment document tonight, which is a really manageable first step. Sometimes the size or complexity of an assignment can make it feel overwhelming, so just opening the file and maybe skimming the headings or instructions without any pressure to start working can help reduce that freeze. When you do open it, what’s the smallest, simplest thing you think you could notice or do that feels doable? If even that feels like too much, another helpful approach is to jot down a quick list of all your assignments with their deadlines to get a clearer overview. That way, you can start to break things down into smaller pieces and prioritize what needs attention soonest. How does that feel for you as a next step?",
+              "used_knowledge_ids": [
+                "kb_001",
+                "kb_050"
+              ],
+              "_agent": "coordinator"
+            },
+            "critic": {
+              "reflection_line": "It sounds like just opening the assignment document tonight feels like a manageable way to start without overwhelming yourself.",
+              "thinking_pattern": "The user is breaking down a daunting task into smaller, less intimidating steps to reduce anxiety.",
+              "underlying_need": "They need to feel safe and capable by taking control over the assignment in a way that doesn't trigger overwhelm.",
+              "reframe_statement": "Taking that first small step of opening the document can help you feel more in control and set the stage for steady progress.",
+              "issues": [
+                "The response includes multiple suggestions which may feel overwhelming rather than focused.",
+                "Some advice like making a list and prioritizing might be premature before the user feels ready to open the document.",
+                "The tone is somewhat instructional and could be more empathetic and validating of the user's feelings.",
+                "The response could better emphasize emotional safety and validate the user's current effort more clearly."
+              ],
+              "revision_goals": [
+                "Focus on validating the user's chosen small step to build emotional safety and trust.",
+                "Limit suggestions to one or two simple, actionable steps aligned with the user's readiness.",
+                "Use more empathetic and supportive language to acknowledge the user's anxiety and effort.",
+                "Avoid introducing too many strategies at once to prevent cognitive overload."
+              ],
+              "_agent": "critic"
+            },
+            "reviser": {
+              "final_response": "Taking the step to just open your assignment tonight is a really kind and manageable way to start, especially when things feel overwhelming. That small action can help you feel a bit more in control without pressure to dive in right away. When you open it, maybe just notice one simple thing—like the title or a heading—that feels easy to focus on. How does it feel to try that and see what comes up for you?",
+              "_agent": "reviser"
+            },
+            "final_check": {
+              "approved": true,
+              "final_response": "Opening the document sounds like a smart, gentle way to start. Taking that small step can really help ease the pressure. It sounds like just opening the assignment document tonight feels like a manageable way to start without overwhelming yourself. You might try just skimming the headings or instructions without aiming to do any work yet. If opening the document feels too much, writing down a quick list of all assignments and their deadlines could help you get a clearer overview. Spending just 5 minutes looking over the document without pressure to start working can be a good way to ease in. And if things feel heavier later, don't hesitate to reach out for extra support.",
+              "notes": [
+                "Response encourages manageable steps and offers supportive, actionable advice without pressure."
+              ],
+              "_agent": "final_checker"
+            },
+            "final_response_sections": {
+              "Empathy": "Opening the document sounds like a smart, gentle way to start. Taking that small step can really help ease the pressure.",
+              "Reflection": "It sounds like just opening the assignment document tonight feels like a manageable way to start without overwhelming yourself.",
+              "Action Step": "User is attempting a manageable first step by just opening the assignment document tonight.\n- Try opening the assignment document tonight and just skim the headings or instructions without aiming to do any work yet.\n- If opening the document feels too much, write down a quick list of all assignments and their deadlines to get a clearer overview.\n- Open the assignment document tonight and spend just 5 minutes looking over it without pressure to start working.",
+              "Safety": "If things feel heavier later, reach out early for extra support."
+            },
+            "final_response": "Opening the document sounds like a smart, gentle way to start\n\nWe can move at your pace here.\n\nWhat feels most intense right now?\n\nIf you want, we can look at one specific moment together."
+          }
+        },
+        {
+          "turn_index": 2,
+          "user": "Do you remember what tiny step I said I would try?",
+          "assistant": "Yes. You said you would try just opening the document tonight.",
+          "details": {
+            "user_input": "Do you remember what tiny step I said I would try?",
+            "system_name": "pipeline",
+            "run_mode": "full",
+            "profile_id": "default",
+            "session_stage": "problem_exploration",
+            "stage_goal": "Clarify the concrete trigger, timing, and impact.",
+            "memory_context": [
+              {
+                "session_id": "20260505T061647.210440Z",
+                "created_at": "2026-05-05T06:17:05.951814+00:00",
+                "user_input": "I keep freezing when I open my assignment, so I want to try just opening the document tonight.",
+                "emotion": "anxious",
+                "topic": "academic_overload",
+                "risk_level": "low",
+                "strategy_route": "academic_overload",
+                "session_stage": "rapport_and_safety",
+                "strategy_next_step": "Open the assignment document tonight and spend just 5 minutes looking over it without pressure to start working.",
+                "strategy_suggestions": [
+                  "Try opening the assignment document tonight and just skim the headings or instructions without aiming to do any work yet.",
+                  "If opening the document feels too much, write down a quick list of all assignments and their deadlines to get a clearer overview."
+                ],
+                "strategy_methods": [],
+                "failed_methods_snapshot": [],
+                "final_response": "Opening the document sounds like a smart, gentle way to start\n\nWe can move at your pace here.\n\nWhat feels most intense right now?\n\nIf you want, we can look at one specific moment together."
+              }
+            ],
+            "user_state": {
+              "main_stressor": "academic_overload",
+              "emotion": "anxious",
+              "risk_level": "low",
+              "session_stage": "rapport_and_safety",
+              "stage_goal": "Build emotional safety and trust before problem-solving.",
+              "last_strategy": "Open the assignment document tonight and spend just 5 minutes looking over it without pressure to start working.",
+              "last_strategy_method": "",
+              "strategy_methods": [],
+              "failed_methods": [],
+              "last_reflection": "The user is breaking down a daunting task into smaller, less intimidating steps to reduce anxiety."
+            },
+            "analyzer": {
+              "emotion": "anxious",
+              "intent": "check progress on small step",
+              "topic": "academic_overload",
+              "risk_level": "low",
+              "needs_actionable_advice": false,
+              "notes": "User is following up on a previously planned small step to open the assignment document to reduce anxiety.",
+              "_agent": "analyzer"
+            },
+            "retrieval": {
+              "enabled": true,
+              "kb_path": "data/support_kb.json",
+              "top_k": 3,
+              "hits": 3,
+              "hit_ids": [
+                "kb_002",
+                "kb_050",
+                "kb_039"
+              ]
+            },
+            "retrieved_knowledge": [
+              {
+                "id": "kb_002",
+                "title": "Deadline Backward Planning",
+                "category": "academic_stress",
+                "tags": [
+                  "deadline",
+                  "planning",
+                  "study",
+                  "project",
+                  "time management"
+                ],
+                "content": "For each deadline, plan backward: draft date, outline date, reading date, and start date. This makes large work visible and lowers panic.",
+                "match_score": 14
+              },
+              {
+                "id": "kb_050",
+                "title": "Coping Ladder Design",
+                "category": "emotional_regulation",
+                "tags": [
+                  "coping",
+                  "ladder",
+                  "low energy",
+                  "support",
+                  "action"
+                ],
+                "content": "Build a three-level coping ladder: very easy, moderate, and stronger actions. Start at the easiest level to regain momentum when capacity is low.",
+                "match_score": 12
+              },
+              {
+                "id": "kb_039",
+                "title": "Best-Case Worst-Case Most-Likely",
+                "category": "decision_support",
+                "tags": [
+                  "decision",
+                  "anxiety",
+                  "risk",
+                  "planning",
+                  "scenario"
+                ],
+                "content": "Write best-case, worst-case, and most-likely outcomes for each option. Include one mitigation for worst-case to reduce fear-driven paralysis.",
+                "match_score": 12
+              }
+            ],
+            "strategy_route": {
+              "scenario": "academic_overload",
+              "matched_keywords": [
+                "assignment"
+              ],
+              "recommended_focus": [
+                "task decomposition",
+                "priority by deadline and effort",
+                "study block planning",
+                "instructor support request"
+              ],
+              "route_reason": "keyword_rule_match",
+              "avoid_generic_actions": [
+                "drink water",
+                "go outside",
+                "take a deep breath"
+              ]
+            },
+            "empathy": {
+              "acknowledgement": "Yes, you planned to just open the assignment document tonight.",
+              "validation": "That small step can really help ease the pressure and make things feel more manageable.",
+              "tone_guidance": "warm and encouraging",
+              "_agent": "empathy"
+            },
+            "strategy": {
+              "problem_frame": "User is checking on the tiny step to open the assignment document to reduce freezing anxiety.",
+              "scenario": "academic_overload",
+              "memory_ack": "User previously planned to open the assignment document tonight and spend just 5 minutes looking over it without pressure.",
+              "failure_mechanism_hypothesis": "The initial step might feel overwhelming if the document still seems too daunting or if anxiety is high at the moment.",
+              "exploration_question": "How did it feel when you tried to open the document? Was there a particular part that felt harder or easier to face?",
+              "suggestions": [
+                "Try opening the assignment document again and just skim the headings or instructions without aiming to do any work yet.",
+                "If opening the document still feels too much, write down a quick list of all assignments and their deadlines to get a clearer overview."
+              ],
+              "next_step": "Gently try opening the assignment document again for just a few minutes, focusing only on noticing the headings or instructions without pressure to start working.",
+              "used_knowledge_ids": [
+                "kb_002",
+                "kb_050"
+              ],
+              "failed_methods_considered": [],
+              "_validation_warnings": [
+                "missing:failed_methods_considered"
+              ],
+              "_agent": "strategy"
+            },
+            "safety": {
+              "risk_detected": false,
+              "risk_level": "low",
+              "flags": [],
+              "constraints": [],
+              "required_actions": [],
+              "_agent": "safety"
+            },
+            "safety_trace": {
+              "agent_risk_level": "low",
+              "keyword_risk_level": "low",
+              "keyword_hits": [],
+              "final_risk_level": "low",
+              "escalation_needed": false,
+              "reasoning_source": "agent_plus_keyword_scan"
+            },
+            "coordinator": {
+              "draft_response": "Yes, you planned to just open the assignment document tonight and spend a few minutes looking it over without any pressure to start working. That small step can really help ease the pressure and make things feel more manageable. How did it feel when you tried to open the document? Was there a particular part that felt harder or easier to face? Sometimes, if the document still feels overwhelming, it can help to just skim the headings or instructions without aiming to do any work yet. Or, if that still feels like too much, writing down a quick list of all your assignments and their deadlines can give a clearer overview and reduce that freezing feeling. What do you think would feel most doable right now?",
+              "used_knowledge_ids": [
+                "kb_002",
+                "kb_050"
+              ],
+              "_agent": "coordinator"
+            },
+            "critic": {
+              "reflection_line": "It sounds like you really wanted to take that small step of just opening the assignment document to make things feel less overwhelming.",
+              "thinking_pattern": "The user is focused on breaking down a large, anxiety-provoking task into manageable, low-pressure actions.",
+              "underlying_need": "They need reassurance and validation that their small efforts are meaningful and helpful in managing their anxiety.",
+              "reframe_statement": "Taking even a tiny step like opening the document is progress and shows you're moving toward feeling more in control.",
+              "issues": [
+                "The response is somewhat long and includes multiple suggestions, which may overwhelm the anxious user.",
+                "The tone is supportive but could be more concise and focused on validating the user's effort before offering alternatives.",
+                "The response introduces new suggestions prematurely without first confirming how the initial step went.",
+                "The question about how it felt might be better placed earlier to encourage user reflection before offering advice."
+              ],
+              "revision_goals": [
+                "Make the response more concise and focused on empathy and validation.",
+                "Prioritize checking in on the user's experience with the initial small step before suggesting alternatives.",
+                "Avoid overwhelming the user with multiple suggestions at once.",
+                "Maintain a warm, encouraging tone that reinforces the user's progress."
+              ],
+              "_agent": "critic"
+            },
+            "reviser": {
+              "final_response": "You planned to just open the assignment document tonight and take a quick look without pressure, which is a really thoughtful way to ease into it. How did it feel when you tried that? Was there a part that felt easier or more challenging to face? Just noticing these feelings is a meaningful step forward. What would you like to explore about this experience together?",
+              "_agent": "reviser"
+            },
+            "final_check": {
+              "approved": true,
+              "final_response": "Yes, you planned to just open the assignment document tonight. That small step can really help ease the pressure and make things feel more manageable. It sounds like you really wanted to take that small step of just opening the assignment document to make things feel less overwhelming. You previously planned to open the assignment document tonight and spend just 5 minutes looking over it without pressure. You might try opening the assignment document again and just skim the headings or instructions without aiming to do any work yet. If opening the document still feels too much, you could write down a quick list of all assignments and their deadlines to get a clearer overview. Gently try opening the assignment document again for just a few minutes, focusing only on noticing the headings or instructions without pressure to start working. If things feel heavier later, remember to reach out early for extra support.",
+              "notes": [
+                "Response is supportive, empathetic, and encourages manageable steps without pressure."
+              ],
+              "_agent": "final_checker"
+            },
+            "final_response_sections": {
+              "Empathy": "Yes, you planned to just open the assignment document tonight. That small step can really help ease the pressure and make things feel more manageable.",
+              "Reflection": "It sounds like you really wanted to take that small step of just opening the assignment document to make things feel less overwhelming.",
+              "Action Step": "User previously planned to open the assignment document tonight and spend just 5 minutes looking over it without pressure.\n- Try opening the assignment document again and just skim the headings or instructions without aiming to do any work yet.\n- If opening the document still feels too much, write down a quick list of all assignments and their deadlines to get a clearer overview.\n- Gently try opening the assignment document again for just a few minutes, focusing only on noticing the headings or instructions without pressure to start working.",
+              "Safety": "If things feel heavier later, reach out early for extra support."
+            },
+            "final_response": "Yes. You said you would try just opening the document tonight."
+          }
+        }
+      ],
+      "runner": "pipeline_full",
+      "status": "ok",
+      "runtime_seconds": 38.074,
+      "response_chars": 62,
+      "final_response": "Yes. You said you would try just opening the document tonight.",
+      "error": null,
+      "details": {
+        "user_input": "Do you remember what tiny step I said I would try?",
+        "system_name": "pipeline",
+        "run_mode": "full",
+        "profile_id": "default",
+        "session_stage": "problem_exploration",
+        "stage_goal": "Clarify the concrete trigger, timing, and impact.",
+        "memory_context": [
+          {
+            "session_id": "20260505T061647.210440Z",
+            "created_at": "2026-05-05T06:17:05.951814+00:00",
+            "user_input": "I keep freezing when I open my assignment, so I want to try just opening the document tonight.",
+            "emotion": "anxious",
+            "topic": "academic_overload",
+            "risk_level": "low",
+            "strategy_route": "academic_overload",
+            "session_stage": "rapport_and_safety",
+            "strategy_next_step": "Open the assignment document tonight and spend just 5 minutes looking over it without pressure to start working.",
+            "strategy_suggestions": [
+              "Try opening the assignment document tonight and just skim the headings or instructions without aiming to do any work yet.",
+              "If opening the document feels too much, write down a quick list of all assignments and their deadlines to get a clearer overview."
+            ],
+            "strategy_methods": [],
+            "failed_methods_snapshot": [],
+            "final_response": "Opening the document sounds like a smart, gentle way to start\n\nWe can move at your pace here.\n\nWhat feels most intense right now?\n\nIf you want, we can look at one specific moment together."
+          }
+        ],
+        "user_state": {
+          "main_stressor": "academic_overload",
+          "emotion": "anxious",
+          "risk_level": "low",
+          "session_stage": "rapport_and_safety",
+          "stage_goal": "Build emotional safety and trust before problem-solving.",
+          "last_strategy": "Open the assignment document tonight and spend just 5 minutes looking over it without pressure to start working.",
+          "last_strategy_method": "",
+          "strategy_methods": [],
+          "failed_methods": [],
+          "last_reflection": "The user is breaking down a daunting task into smaller, less intimidating steps to reduce anxiety."
+        },
+        "analyzer": {
+          "emotion": "anxious",
+          "intent": "check progress on small step",
+          "topic": "academic_overload",
+          "risk_level": "low",
+          "needs_actionable_advice": false,
+          "notes": "User is following up on a previously planned small step to open the assignment document to reduce anxiety.",
+          "_agent": "analyzer"
+        },
+        "retrieval": {
+          "enabled": true,
+          "kb_path": "data/support_kb.json",
+          "top_k": 3,
+          "hits": 3,
+          "hit_ids": [
+            "kb_002",
+            "kb_050",
+            "kb_039"
+          ]
+        },
+        "retrieved_knowledge": [
+          {
+            "id": "kb_002",
+            "title": "Deadline Backward Planning",
+            "category": "academic_stress",
+            "tags": [
+              "deadline",
+              "planning",
+              "study",
+              "project",
+              "time management"
+            ],
+            "content": "For each deadline, plan backward: draft date, outline date, reading date, and start date. This makes large work visible and lowers panic.",
+            "match_score": 14
+          },
+          {
+            "id": "kb_050",
+            "title": "Coping Ladder Design",
+            "category": "emotional_regulation",
+            "tags": [
+              "coping",
+              "ladder",
+              "low energy",
+              "support",
+              "action"
+            ],
+            "content": "Build a three-level coping ladder: very easy, moderate, and stronger actions. Start at the easiest level to regain momentum when capacity is low.",
+            "match_score": 12
+          },
+          {
+            "id": "kb_039",
+            "title": "Best-Case Worst-Case Most-Likely",
+            "category": "decision_support",
+            "tags": [
+              "decision",
+              "anxiety",
+              "risk",
+              "planning",
+              "scenario"
+            ],
+            "content": "Write best-case, worst-case, and most-likely outcomes for each option. Include one mitigation for worst-case to reduce fear-driven paralysis.",
+            "match_score": 12
+          }
+        ],
+        "strategy_route": {
+          "scenario": "academic_overload",
+          "matched_keywords": [
+            "assignment"
+          ],
+          "recommended_focus": [
+            "task decomposition",
+            "priority by deadline and effort",
+            "study block planning",
+            "instructor support request"
+          ],
+          "route_reason": "keyword_rule_match",
+          "avoid_generic_actions": [
+            "drink water",
+            "go outside",
+            "take a deep breath"
+          ]
+        },
+        "empathy": {
+          "acknowledgement": "Yes, you planned to just open the assignment document tonight.",
+          "validation": "That small step can really help ease the pressure and make things feel more manageable.",
+          "tone_guidance": "warm and encouraging",
+          "_agent": "empathy"
+        },
+        "strategy": {
+          "problem_frame": "User is checking on the tiny step to open the assignment document to reduce freezing anxiety.",
+          "scenario": "academic_overload",
+          "memory_ack": "User previously planned to open the assignment document tonight and spend just 5 minutes looking over it without pressure.",
+          "failure_mechanism_hypothesis": "The initial step might feel overwhelming if the document still seems too daunting or if anxiety is high at the moment.",
+          "exploration_question": "How did it feel when you tried to open the document? Was there a particular part that felt harder or easier to face?",
+          "suggestions": [
+            "Try opening the assignment document again and just skim the headings or instructions without aiming to do any work yet.",
+            "If opening the document still feels too much, write down a quick list of all assignments and their deadlines to get a clearer overview."
+          ],
+          "next_step": "Gently try opening the assignment document again for just a few minutes, focusing only on noticing the headings or instructions without pressure to start working.",
+          "used_knowledge_ids": [
+            "kb_002",
+            "kb_050"
+          ],
+          "failed_methods_considered": [],
+          "_validation_warnings": [
+            "missing:failed_methods_considered"
+          ],
+          "_agent": "strategy"
+        },
+        "safety": {
+          "risk_detected": false,
+          "risk_level": "low",
+          "flags": [],
+          "constraints": [],
+          "required_actions": [],
+          "_agent": "safety"
+        },
+        "safety_trace": {
+          "agent_risk_level": "low",
+          "keyword_risk_level": "low",
+          "keyword_hits": [],
+          "final_risk_level": "low",
+          "escalation_needed": false,
+          "reasoning_source": "agent_plus_keyword_scan"
+        },
+        "coordinator": {
+          "draft_response": "Yes, you planned to just open the assignment document tonight and spend a few minutes looking it over without any pressure to start working. That small step can really help ease the pressure and make things feel more manageable. How did it feel when you tried to open the document? Was there a particular part that felt harder or easier to face? Sometimes, if the document still feels overwhelming, it can help to just skim the headings or instructions without aiming to do any work yet. Or, if that still feels like too much, writing down a quick list of all your assignments and their deadlines can give a clearer overview and reduce that freezing feeling. What do you think would feel most doable right now?",
+          "used_knowledge_ids": [
+            "kb_002",
+            "kb_050"
+          ],
+          "_agent": "coordinator"
+        },
+        "critic": {
+          "reflection_line": "It sounds like you really wanted to take that small step of just opening the assignment document to make things feel less overwhelming.",
+          "thinking_pattern": "The user is focused on breaking down a large, anxiety-provoking task into manageable, low-pressure actions.",
+          "underlying_need": "They need reassurance and validation that their small efforts are meaningful and helpful in managing their anxiety.",
+          "reframe_statement": "Taking even a tiny step like opening the document is progress and shows you're moving toward feeling more in control.",
+          "issues": [
+            "The response is somewhat long and includes multiple suggestions, which may overwhelm the anxious user.",
+            "The tone is supportive but could be more concise and focused on validating the user's effort before offering alternatives.",
+            "The response introduces new suggestions prematurely without first confirming how the initial step went.",
+            "The question about how it felt might be better placed earlier to encourage user reflection before offering advice."
+          ],
+          "revision_goals": [
+            "Make the response more concise and focused on empathy and validation.",
+            "Prioritize checking in on the user's experience with the initial small step before suggesting alternatives.",
+            "Avoid overwhelming the user with multiple suggestions at once.",
+            "Maintain a warm, encouraging tone that reinforces the user's progress."
+          ],
+          "_agent": "critic"
+        },
+        "reviser": {
+          "final_response": "You planned to just open the assignment document tonight and take a quick look without pressure, which is a really thoughtful way to ease into it. How did it feel when you tried that? Was there a part that felt easier or more challenging to face? Just noticing these feelings is a meaningful step forward. What would you like to explore about this experience together?",
+          "_agent": "reviser"
+        },
+        "final_check": {
+          "approved": true,
+          "final_response": "Yes, you planned to just open the assignment document tonight. That small step can really help ease the pressure and make things feel more manageable. It sounds like you really wanted to take that small step of just opening the assignment document to make things feel less overwhelming. You previously planned to open the assignment document tonight and spend just 5 minutes looking over it without pressure. You might try opening the assignment document again and just skim the headings or instructions without aiming to do any work yet. If opening the document still feels too much, you could write down a quick list of all assignments and their deadlines to get a clearer overview. Gently try opening the assignment document again for just a few minutes, focusing only on noticing the headings or instructions without pressure to start working. If things feel heavier later, remember to reach out early for extra support.",
+          "notes": [
+            "Response is supportive, empathetic, and encourages manageable steps without pressure."
+          ],
+          "_agent": "final_checker"
+        },
+        "final_response_sections": {
+          "Empathy": "Yes, you planned to just open the assignment document tonight. That small step can really help ease the pressure and make things feel more manageable.",
+          "Reflection": "It sounds like you really wanted to take that small step of just opening the assignment document to make things feel less overwhelming.",
+          "Action Step": "User previously planned to open the assignment document tonight and spend just 5 minutes looking over it without pressure.\n- Try opening the assignment document again and just skim the headings or instructions without aiming to do any work yet.\n- If opening the document still feels too much, write down a quick list of all assignments and their deadlines to get a clearer overview.\n- Gently try opening the assignment document again for just a few minutes, focusing only on noticing the headings or instructions without pressure to start working.",
+          "Safety": "If things feel heavier later, reach out early for extra support."
+        },
+        "final_response": "Yes. You said you would try just opening the document tonight."
+      },
+      "judge_status": "skipped",
+      "judge_error": null,
+      "quality": {}
+    }
+  ]
+}

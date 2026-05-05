@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 from pathlib import Path
@@ -322,6 +323,9 @@ ACTION_REQUEST_TOKENS = (
     "what can i do",
     "how should i",
     "how do i",
+    "where to start",
+    "where should i start",
+    "how to start",
     "any advice",
     "next step",
     "what's the best way",
@@ -692,7 +696,11 @@ class MindBridgePipeline:
         best_hits = 0
         best_priority = -1
         for entry in STRATEGY_PLAYBOOK:
-            hits = [word for word in entry["keywords"] if word in routing_text]
+            hits = [
+                word
+                for word in entry["keywords"]
+                if self._keyword_matches(routing_text, word)
+            ]
             if not hits:
                 continue
             priority = int(entry.get("priority", 0))
@@ -720,6 +728,10 @@ class MindBridgePipeline:
 
         best["avoid_generic_actions"] = list(GENERIC_ACTIONS_TO_AVOID)
         return best
+
+    def _keyword_matches(self, text: str, keyword: str) -> bool:
+        pattern = r"(?<![a-zA-Z])" + re.escape(keyword.lower()) + r"(?![a-zA-Z])"
+        return re.search(pattern, text.lower()) is not None
 
     def _is_generic_suggestion(self, text: str) -> bool:
         lowered = text.lower()
@@ -861,6 +873,22 @@ class MindBridgePipeline:
         lowered = user_input.lower()
         return any(cue in lowered for cue in MEMORY_RECALL_CUES)
 
+    def _is_factual_memory_recall_question(self, user_input: str) -> bool:
+        lowered = user_input.lower()
+        factual_cues = (
+            "what",
+            "which",
+            "step",
+            "plan",
+            "said",
+            "try",
+            "remind me",
+            "提醒我",
+        )
+        return self._is_memory_recall_question(user_input) and any(
+            cue in lowered for cue in factual_cues
+        )
+
     def _contains_memory_reference(self, text: str) -> bool:
         lowered = (text or "").lower().strip()
         if not lowered:
@@ -882,16 +910,35 @@ class MindBridgePipeline:
         if not state.memory_context:
             return ""
         last = state.memory_context[-1]
-        topic = str(last.get("topic", "")).strip()
+        question = state.user_input.lower()
         user_text = str(last.get("user_input", "")).strip()
+        user_text_lower = user_text.lower()
+        if any(
+            cue in question
+            for cue in ("i said", "said i", "i would try", "what tiny step")
+        ):
+            for marker in ("i want to try", "i would try", "try "):
+                idx = user_text_lower.find(marker)
+                if idx >= 0:
+                    step = user_text[idx + len(marker) :].strip(" .")
+                    if step:
+                        return f"Yes. You said you would try {step}."
+        last_step = str(last.get("strategy_next_step", "")).strip()
+        if last_step and any(
+            token in question
+            for token in ("step", "try", "plan", "said", "remind", "tiny")
+        ):
+            return f"Yes. The tiny step was: {last_step.rstrip('.')}."
+        topic = str(last.get("topic", "")).strip()
         if topic:
-            return f"I do remember earlier in this profile: we were discussing {topic}."
+            readable_topic = topic.replace("_", " ")
+            return f"Yes. We were talking about {readable_topic}."
         if user_text:
             snippet = user_text[:80].strip()
             if len(user_text) > 80:
                 snippet += "..."
-            return f"I do remember earlier in this profile: you shared \"{snippet}\"."
-        return "I do remember our earlier conversation in this profile."
+            return f"Yes. You shared \"{snippet}\"."
+        return "Yes. I remember our earlier conversation in this profile."
 
     def _memory_recall_relationship_response(self, state: DialogueState, variant: int) -> str:
         asked_recall = self._is_memory_recall_question(state.user_input)
@@ -906,6 +953,9 @@ class MindBridgePipeline:
             parts.append(
                 "I may not have enough earlier context loaded in this profile yet, and you can re-anchor me with one detail."
             )
+
+        if self._is_factual_memory_recall_question(state.user_input):
+            return "\n\n".join(parts).strip()
 
         relationship_lines = (
             "Part of this question can be about whether this space is still continuous and whether I am still with you.",
@@ -948,6 +998,13 @@ class MindBridgePipeline:
             recall_line = self._memory_recall_line(state)
             if recall_line and asked_recall:
                 if cleaned_parts:
+                    first = cleaned_parts[0].strip()
+                    first_lower = first.lower()
+                    if (
+                        self._is_redundant_sentence(recall_line, first)
+                        or first_lower.startswith(("yes.", "i remember", "i do remember"))
+                    ):
+                        return "\n\n".join(cleaned_parts).strip()
                     return "\n\n".join([recall_line] + cleaned_parts).strip()
                 return recall_line
             if cleaned_parts:
@@ -1308,6 +1365,8 @@ class MindBridgePipeline:
             stage = "follow_up"
         elif intro_turn or positive_turn:
             stage = "rapport_and_safety"
+        elif action_allowed and turn <= 2:
+            stage = "goal_setting"
         elif turn <= 1:
             stage = "rapport_and_safety"
         elif turn == 2:
@@ -1890,9 +1949,15 @@ class MindBridgePipeline:
         if self.retriever is None:
             self.retriever = SupportKnowledgeRetriever(self.settings.support_kb_path)
 
+        retrieval_context = dict(state.analyzer)
+        retrieval_context["strategy_route"] = state.strategy_route.get("scenario", "")
+        retrieval_context["recommended_focus"] = state.strategy_route.get(
+            "recommended_focus",
+            [],
+        )
         state.retrieved_knowledge = self.retriever.retrieve(
             user_input=user_input,
-            analysis=state.analyzer,
+            analysis=retrieval_context,
             top_k=self.settings.retrieval_top_k,
         )
         state.retrieval = {
