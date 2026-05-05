@@ -379,7 +379,7 @@ def _qualitative_case_studies(
     records: list[dict[str, Any]],
     pipeline_runner: str = PIPELINE_FULL_RUNNER_NAME,
     baseline_runner: str = BASELINE_RUNNER_NAME,
-    top_k: int = 2,
+    top_k: int = 3,
 ) -> dict[str, list[dict[str, Any]]]:
     by_case: dict[str, dict[str, dict[str, Any]]] = {}
     for record in records:

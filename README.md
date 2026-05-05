@@ -1,12 +1,13 @@
 # MindBridge
 
 `MindBridge` is a minimal Python project skeleton for a self-reflective multi-agent supportive dialogue system. It is designed for course-project use: easy to read, easy to extend, and aligned with the architecture you proposed.
-
 ## Method Overview
 
 We propose a multi-agent supportive dialogue system that decomposes response generation into specialized modules, including input analysis, knowledge retrieval, empathy modeling, strategy planning, and safety control.
 
 Unlike a single-agent baseline that produces responses in one step, our system explicitly structures intermediate reasoning stages and introduces a reflection mechanism for iterative improvement. This design aims to improve interpretability, controllability, and response quality in sensitive scenarios such as emotional support.
+
+MindBridge is CBT-informed, not a clinical CBT provider. It borrows low-risk ideas from Cognitive Behavioral Therapy, such as noticing thought-emotion-action loops, gently testing extreme thoughts, forming balanced reframes, and choosing small behavior steps. It does not diagnose, treat, or replace professional mental-health care.
 
 ## What this skeleton includes
 
@@ -76,14 +77,6 @@ mindbridge/
   data/
     eval_cases.json
     support_kb.json
-  docs/
-    proposal_alignment.md
-    results.md
-  evaluation_pack/
-    qualitative/
-    quantitative/
-    scripts/
-    templates/
 ```
 
 ## Setup
@@ -118,7 +111,7 @@ Fill in:
 - optional `RETRIEVAL_TOP_K`
 - optional `MEMORY_WINDOW`
 - optional `RESPONSE_STYLE` (`conversational` or `structured`)
-- optional `THERAPIST_FLOW_STRICT` (`true` for therapist-style flow, `false` for lighter assistant flow)
+- optional `THERAPIST_FLOW_STRICT` (`true` for CBT-informed reflective flow, `false` for lighter assistant flow)
 - optional `PERSISTENT_MEMORY_ENABLED` (`true` to store profile memory on disk)
 - optional `PERSISTENT_MEMORY_PATH` (JSON path for saved profile memory, default `data/user_profiles.json`)
 - optional `PERSISTENT_HISTORY_LIMIT` (max saved turns per profile)
@@ -126,7 +119,7 @@ Fill in:
 Example switch:
 
 ```bash
-# therapist-style flow (deeper exploration first)
+# CBT-informed reflective flow (deeper exploration first)
 THERAPIST_FLOW_STRICT=true
 
 # lighter assistant flow (faster to suggestions)
@@ -155,6 +148,8 @@ python app.py --system pipeline --mode no_critic --message "I feel overwhelmed w
 python app.py --system pipeline --mode no_reviser --message "I feel overwhelmed with school."
 python app.py --system pipeline --mode no_safety --message "I feel overwhelmed with school."
 python app.py --system pipeline --mode no_retrieval --message "I feel overwhelmed with school."
+python app.py --system pipeline --mode no_empathy --message "I feel overwhelmed with school."
+python app.py --system pipeline --mode no_strategy --message "I feel overwhelmed with school."
 python app.py --system pipeline --mode full --chat
 python app.py --system pipeline --mode full --chat --profile-id alice
 python app.py --system pipeline --mode full --profile-id alice --clear-profile-memory --message "Let's restart."
@@ -197,8 +192,6 @@ python evaluate.py
 python evaluate.py --judge-model gpt-4.1-mini
 python evaluate.py --skip-judge
 python evaluate.py --bootstrap-samples 5000
-python evaluate.py --pairwise-judge
-python evaluate.py --cases data/eval_cases_multiturn.json --skip-judge --runners pipeline_full
 ```
 
 By default it saves:
@@ -209,24 +202,21 @@ By default it saves:
 Reproducible helper scripts:
 
 ```bash
-./scripts/run_smoke_checks.sh
 ./scripts/run_eval_fast.sh
 ./scripts/run_eval_full.sh
-./scripts/run_eval_multiturn.sh
+./scripts/run_checks.sh
 ```
 
-`run_smoke_checks.sh` validates Python syntax, JSON data, and CLI help without needing an API key.
-`run_eval_fast.sh` skips the LLM judge for quick checks.
-`run_eval_full.sh` runs judge scoring, pairwise baseline comparison, bootstrap CI, and qualitative sections.
-`run_eval_multiturn.sh` checks memory, failed-advice follow-up, and safety edge cases.
+`run_eval_fast.sh` skips the LLM judge for quick checks. `run_eval_full.sh` runs judge scoring, bootstrap CI, and qualitative sections.
+`run_checks.sh` runs Python syntax checks and lightweight unit tests that do not require an OpenAI API call.
 
-## Evaluation Coverage
+## Rubric Alignment (Evaluation 4.3)
 
 - Quantitative metrics:
   - runtime and response-length summaries (`runtime_summary`)
   - baseline comparison (`single_agent_baseline` vs `pipeline_*`)
   - statistical significance via paired bootstrap CI (`paired_quality_deltas`)
-  - ablation studies (`no_critic`, `no_reviser`, `no_safety`, `no_retrieval`)
+  - ablation studies: `no_critic`, `no_reviser`, `no_safety`, `no_retrieval`, `no_empathy`, `no_strategy`
 - Qualitative analysis:
   - auto-selected case studies (top improvements and regressions)
   - error analysis (runtime/judge errors and high-risk mismatch checks)
@@ -262,12 +252,15 @@ Supports ablation modes for:
 - `no_reviser`
 - `no_safety`
 - `no_retrieval`
+- `no_empathy`
+- `no_strategy`
 
 ### `baseline.py`
 Defines the single-agent baseline used for comparison against the multi-agent pipeline.
 
 ### `evaluate.py`
 Runs batch evaluation across the baseline, the full pipeline, and the ablation variants, with optional judge-based scoring and paired bootstrap confidence intervals versus the baseline.
+We evaluate both systems using an LLM-as-judge framework across four dimensions: empathy, helpfulness, safety, and naturalness. These metrics are chosen to reflect the key requirements of supportive dialogue systems.
 
 ### `judge.py`
 Implements the LLM-as-judge scorer for empathy, helpfulness, safety, and naturalness.
@@ -281,17 +274,8 @@ Defines the shared `DialogueState` object used to store intermediate outputs.
 ### `data/eval_cases.json`
 Stratified evaluation set (48 cases) with low, medium, and high-risk scenarios across diverse categories.
 
-### `data/eval_cases_multiturn.json`
-Multi-turn edge cases for memory recall, failed-advice follow-up, high-risk escalation, false-positive safety boundaries, and unsafe-home scenarios.
-
 ### `data/support_kb.json`
 Compact support knowledge base used by retrieval grounding.
-
-### `evaluation_pack/`
-Report-support templates and checklist files for quantitative and qualitative evaluation writeups.
-
-### `docs/results.md`
-Saved evaluation output from a prior full run plus the latest agent-improvement smoke evaluation summary.
 
 ## Baseline vs Multi-Agent
 
@@ -308,14 +292,14 @@ This comparison allows us to evaluate whether structured reasoning and modular d
 - This scaffold is for research and class-project prototyping.
 - It is not a production mental-health support system.
 - The current implementation depends heavily on prompt design and API behavior.
-- The evaluation uses an LLM judge; human annotation would provide stronger validity.
-- Safety coverage is demonstrated through scripted cases, not exhaustive clinical red-team testing.
+- The JSON parsing is intentionally lightweight; you may want stronger schema validation later.
 
-## Quick checklist
+## Recommended report framing
 
-- [ ] Fill in `.env`
-- [ ] Run the CLI once
-- [ ] Run `./scripts/run_smoke_checks.sh`
-- [ ] Test sample cases in `data/eval_cases.json`
-- [ ] Test multi-turn cases in `data/eval_cases_multiturn.json`
-- [ ] Regenerate full evaluation results with `./scripts/run_eval_full.sh`
+When describing this implementation in your report, emphasize:
+
+- role specialization for interpretability
+- structured intermediate outputs for analysis
+- reflection for iterative improvement
+- safety constraints as a dedicated module rather than an afterthought
+

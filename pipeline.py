@@ -1043,13 +1043,27 @@ class MindBridgePipeline:
     def _is_introduction_turn(self, user_input: str) -> bool:
         lowered = user_input.lower().strip()
         words = [w for w in lowered.replace(",", " ").split() if w]
-        intro_patterns = (
-            "my name is",
-            "i am ",
-            "i'm ",
-            "call me ",
-        )
-        if any(pattern in lowered for pattern in intro_patterns):
+        if "my name is" in lowered or "call me " in lowered:
+            return True
+        if (
+            (lowered.startswith("i am ") or lowered.startswith("i'm "))
+            and len(words) <= 5
+            and not any(
+                cue in lowered
+                for cue in (
+                    "feeling",
+                    "falling",
+                    "stuck",
+                    "behind",
+                    "pretending",
+                    "worried",
+                    "scared",
+                    "sad",
+                    "anxious",
+                    "overwhelmed",
+                )
+            )
+        ):
             return True
         greeting_tokens = {"hi", "hello", "hey"}
         if words and words[0] in greeting_tokens and len(words) <= 8:
@@ -1198,6 +1212,12 @@ class MindBridgePipeline:
     def _de_template_empathy(self, text: str, variant: int) -> str:
         cleaned = text.strip()
         lowered = cleaned.lower()
+        if lowered.startswith("it sounds like you've got a lot on your plate"):
+            return "That sounds really overwhelming."
+        if lowered.startswith("it sounds like you have a lot on your plate"):
+            return "That sounds really overwhelming."
+        if lowered.startswith("it sounds like you're feeling really overwhelmed"):
+            return "That sounds really overwhelming."
         if lowered.startswith("it sounds like") and variant == 1:
             return cleaned.replace("It sounds like", "That can feel like", 1)
         if lowered.startswith("it sounds") and variant == 2:
@@ -1207,6 +1227,124 @@ class MindBridgePipeline:
         if lowered.startswith("i'm sorry to hear") and variant == 2:
             return cleaned.replace("I'm sorry to hear that", "That's a lot to carry", 1)
         return cleaned
+
+    def _natural_first_turn_response(self, state: DialogueState, risk_level: str) -> str:
+        lowered = state.user_input.lower()
+        if "compare" in lowered or "comparing" in lowered:
+            response = (
+                "That comparison loop can get painful fast. "
+                "Who do you compare yourself to most when it spikes?"
+            )
+        elif "overwhelmed" in lowered or "too much" in lowered:
+            response = (
+                "That sounds really overwhelming. Let's make it smaller: "
+                "what's the main thing pressing on you right now?"
+            )
+        elif "sad" in lowered or "depressed" in lowered or "low" in lowered:
+            response = "I'm sorry today feels this heavy. What happened that made it hit hardest?"
+        elif "anxious" in lowered or "anxiety" in lowered or "panic" in lowered:
+            response = "That anxious spiral can get loud fast. What's it stuck on right now?"
+        else:
+            response = "I'm here with you. What's the part you most want to get out first?"
+
+        if risk_level == "medium":
+            response += (
+                "\n\nAlso, if this starts feeling unsafe or too hard to sit with alone, "
+                "please stay near someone you trust."
+            )
+        return response
+
+    def _quoted_or_key_phrase(self, text: str) -> str:
+        cleaned = " ".join(str(text).strip().split())
+        if not cleaned:
+            return ""
+
+        quoted = re.findall(r"[\"“”]([^\"“”]{3,100})[\"“”]", cleaned)
+        if quoted:
+            return quoted[-1].strip().strip(".,!?;:")
+
+        lowered = cleaned.lower()
+        key_phrases = (
+            "i'm falling behind",
+            "i am falling behind",
+            "falling behind",
+            "i'm just pretending",
+            "i am just pretending",
+            "just pretending",
+            "pretending",
+            "everyone else is moving forward",
+            "everyone else has it figured out",
+            "i'm stuck",
+            "i am stuck",
+            "stuck",
+            "not smart enough",
+            "not good enough",
+            "not enough",
+            "don't understand anything",
+            "do not understand anything",
+            "everyone will realize",
+            "people will realize",
+            "people will find out",
+            "compare myself",
+            "comparing myself",
+        )
+        for phrase in key_phrases:
+            if phrase in lowered:
+                return phrase
+        return ""
+
+    def _cbt_phrase_question(self, phrase: str, state: DialogueState) -> str:
+        lowered = phrase.lower()
+        if "pretending" in lowered:
+            return 'When you say "pretending," what are you afraid people would find out?'
+        if "falling behind" in lowered:
+            return 'When "I\'m falling behind" shows up, what does it seem to say about you?'
+        if "moving forward" in lowered or "figured out" in lowered:
+            return "When you compare yourself to them, what do you imagine they have that you do not?"
+        if "stuck" in lowered:
+            return 'When you say "stuck," what feels blocked: progress, confidence, or energy?'
+        if "not smart enough" in lowered or "not good enough" in lowered or "not enough" in lowered:
+            return f'When that "{phrase}" thought shows up, what is the strongest evidence your mind uses for it?'
+        if "realize" in lowered or "find out" in lowered:
+            return "What feels most scary about people seeing that part of you?"
+        if "understand anything" in lowered:
+            return 'When your mind says "I don\'t understand anything," what is one piece of evidence it points to?'
+        if "compare" in lowered:
+            return "Who do you compare yourself to most when this feeling spikes?"
+        return "What does that thought seem to mean about you in that moment?"
+
+    def _cbt_exploration_response(
+        self,
+        state: DialogueState,
+        risk_level: str,
+        empathy: str,
+    ) -> str:
+        current_phrase = self._quoted_or_key_phrase(state.user_input)
+        previous_phrase = self._quoted_or_key_phrase(self._last_user_input(state))
+        phrase = current_phrase or previous_phrase
+        turn = self._session_turn(state)
+
+        if phrase:
+            if turn <= 2:
+                lead = f'That "{phrase}" part feels important.'
+            else:
+                lead = f'Let\'s stay with "{phrase}" for a moment.'
+            question = self._cbt_phrase_question(phrase, state)
+        else:
+            lead = empathy or "That sounds like it has been sitting with you for a while."
+            if turn <= 2:
+                question = "What was happening the last time this feeling got strong?"
+            elif turn == 3:
+                question = "What sentence does your mind say about you when this happens?"
+            else:
+                question = "What feels most at stake if that thought were true?"
+
+        response = f"{lead} {question}"
+        if risk_level == "medium":
+            response += (
+                "\n\nAnd if this starts feeling unsafe to sit with alone, please stay near someone you trust."
+            )
+        return response
 
     def _validate_failed_effort(self, memory_ack: str) -> str:
         if memory_ack and "did not help enough" in memory_ack.lower():
@@ -1373,16 +1511,14 @@ class MindBridgePipeline:
             stage = "problem_exploration"
         elif turn == 3:
             stage = "emotion_identification"
-        elif turn == 4 and action_allowed:
-            stage = "goal_setting"
         elif turn == 4:
             stage = "root_cause_exploration"
-        elif turn >= 5 and not action_allowed:
+        elif turn == 5 and not action_allowed:
             stage = "root_cause_exploration"
-        elif turn >= 5 and not deeper_signal:
+        elif turn == 5 and not deeper_signal:
             stage = "root_cause_exploration"
         elif turn == 5:
-            stage = "intervention"
+            stage = "goal_setting"
         elif turn >= 9:
             stage = "session_closing"
         else:
@@ -1470,14 +1606,14 @@ class MindBridgePipeline:
 
     def _stage_transition_line(self, stage: str) -> str:
         transitions = {
-            "rapport_and_safety": "We can move at your pace here.",
-            "problem_exploration": "Let's slow this down and make the picture clearer first.",
-            "emotion_identification": "Naming the feeling often makes it less overwhelming.",
-            "root_cause_exploration": "If we understand the pattern underneath, the next step usually becomes clearer.",
-            "goal_setting": "We can turn this into one concrete target, not a huge task list.",
-            "intervention": "Let's keep it practical and gentle for tonight.",
+            "rapport_and_safety": "",
+            "problem_exploration": "",
+            "emotion_identification": "",
+            "root_cause_exploration": "",
+            "goal_setting": "",
+            "intervention": "",
             "session_closing": "Let's land this with one clear takeaway.",
-            "follow_up": "Let's first understand what happened with the last step before changing tools.",
+            "follow_up": "",
         }
         return transitions.get(stage, "")
 
@@ -1497,9 +1633,11 @@ class MindBridgePipeline:
             return "Fear may be taking up a lot of space right now."
         if emotion in {"distressed", "distress"}:
             return "I can hear a lot of distress in this."
+        if emotion in {"insecure", "insecurity"}:
+            return "It sounds like this brings up a lot of insecurity."
         if emotion in POSITIVE_EMOTION_LABELS:
-            return f"It sounds like {emotion} is more present right now."
-        return f"It seems like {emotion} is very present right now."
+            return f"It sounds like {emotion} is showing up here."
+        return f"It sounds like {emotion} is really present right now."
 
     def _problem_exploration_question(self, state: DialogueState, variant: int) -> str:
         if self._is_positive_turn(state.user_input, state):
@@ -1649,6 +1787,9 @@ class MindBridgePipeline:
                     "If things feel heavier tonight, please stay connected with someone you trust rather than carrying this alone."
                 )
             return recall_response
+
+        if self._session_turn(state) <= 1 and risk_level in {"low", "medium"}:
+            return self._natural_first_turn_response(state, risk_level)
 
         if positive_turn and risk_level == "low" and not failure_turn:
             if self._is_brief_positive_checkin(state.user_input, state):
@@ -1849,22 +1990,59 @@ class MindBridgePipeline:
             "memory_context": state.memory_context,
             "user_state": state.user_state,
         }
-        max_workers = 3 if self.run_config.use_safety else 2
-        with ThreadPoolExecutor(max_workers=max_workers) as executor:
-            empathy_future = executor.submit(self.agents["empathy"].run, shared_context)
-            strategy_future = executor.submit(self.agents["strategy"].run, shared_context)
-            safety_future = None
-            if self.run_config.use_safety:
-                safety_future = executor.submit(self.agents["safety"].run, shared_context)
-
-            state.empathy = empathy_future.result()
-            state.strategy = self._normalize_strategy_output(
-                strategy_future.result(),
-                state.strategy_route,
-                user_input,
-                state.user_state,
-                state.memory_context,
+        active_workers = sum([
+            self.run_config.use_empathy,
+            self.run_config.use_strategy,
+            self.run_config.use_safety,
+        ])
+        with ThreadPoolExecutor(max_workers=max(1, active_workers)) as executor:
+            empathy_future = (
+                executor.submit(self.agents["empathy"].run, shared_context)
+                if self.run_config.use_empathy
+                else None
             )
+            strategy_future = (
+                executor.submit(self.agents["strategy"].run, shared_context)
+                if self.run_config.use_strategy
+                else None
+            )
+            safety_future = (
+                executor.submit(self.agents["safety"].run, shared_context)
+                if self.run_config.use_safety
+                else None
+            )
+
+            if empathy_future is not None:
+                state.empathy = empathy_future.result()
+            else:
+                state.empathy = self._skipped_output(
+                    "Empathy ablation mode disabled this stage.",
+                    acknowledgement="",
+                    validation="",
+                    tone_guidance="",
+                )
+
+            if strategy_future is not None:
+                state.strategy = self._normalize_strategy_output(
+                    strategy_future.result(),
+                    state.strategy_route,
+                    user_input,
+                    state.user_state,
+                    state.memory_context,
+                )
+            else:
+                state.strategy = self._skipped_output(
+                    "Strategy ablation mode disabled this stage.",
+                    problem_frame="",
+                    scenario=state.strategy_route.get("scenario", "general_support"),
+                    memory_ack="",
+                    failure_mechanism_hypothesis="",
+                    exploration_question="",
+                    suggestions=[],
+                    next_step="",
+                    used_knowledge_ids=[],
+                )
+
             if safety_future is None:
                 state.safety = self._skipped_output(
                     "Safety ablation mode disabled this stage.",
@@ -2102,6 +2280,12 @@ class MindBridgePipeline:
                 )
             return recall_response
 
+        if session_turn <= 1 and risk_level in {"low", "medium"} and not intro_turn:
+            return self._natural_first_turn_response(state, risk_level)
+
+        if 2 <= session_turn <= 4 and risk_level in {"low", "medium"} and not intro_turn:
+            return self._cbt_exploration_response(state, risk_level, empathy)
+
         if positive_turn and risk_level == "low" and not failure_turn:
             if self._is_brief_positive_checkin(state.user_input, state):
                 lead = "I am glad to hear this moment feels a little lighter."
@@ -2152,13 +2336,8 @@ class MindBridgePipeline:
                 parts.append(self._reframe_line(state, variant))
             parts.append(self._stage_prompt_question(state, stage, variant))
         elif stage == "goal_setting":
-            parts.append(self._reframe_line(state, variant))
             parts.append(self._stage_prompt_question(state, stage, variant))
-            if primary_step and action_allowed:
-                parts.append(self._gentle_action_invite(primary_step, alternative_step, variant))
         elif stage == "intervention":
-            if high_emotion_turn:
-                parts.append("We can keep this to one very small step for tonight.")
             if action_allowed:
                 parts.append(
                     self._goal_or_action_line(
@@ -2169,8 +2348,7 @@ class MindBridgePipeline:
                     )
                 )
             else:
-                parts.append("Before we pick a step, I want to understand one layer deeper.")
-            parts.append(self._stage_prompt_question(state, stage, variant))
+                parts.append(self._stage_prompt_question(state, "root_cause_exploration", variant))
         elif stage == "session_closing":
             summary = self._single_sentence(str(state.analyzer.get("notes", "")).strip())
             if summary:
@@ -2190,10 +2368,8 @@ class MindBridgePipeline:
         elif state.safety.get("flags"):
             parts.append("If this gets heavier later, reach out early for extra support.")
 
-        if stage in {"goal_setting", "intervention", "session_closing"}:
+        if stage in {"session_closing"}:
             parts.append(self._collaborative_close(state, variant))
-        elif stage == "rapport_and_safety" and not positive_turn and not intro_turn:
-            parts.append("If you want, we can look at one specific moment together.")
 
         return "\n\n".join(part for part in parts if part).strip()
 
@@ -2303,8 +2479,6 @@ class MindBridgePipeline:
             user_input,
             state,
         )
-
-        print(f"[safety_trace] {json.dumps(state.safety_trace, ensure_ascii=False)}")
 
         state.coordinator = self.agents["coordinator"].run(
             {

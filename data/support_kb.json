@@ -780,40 +780,53 @@
     "content": "Use calm validating language and avoid dismissing distress. Pair empathy with direct safety actions so support is compassionate and practical."
   },
   {
-    "id": "kb_061",
-    "title": "Low Mood First Step",
-    "category": "emotional_support",
-    "tags": [
-      "sad",
-      "low mood",
-      "empty",
-      "down",
-      "depressed"
-    ],
-    "content": "When you feel low, start with one very small action such as getting out of bed, drinking water, or opening a window. Small actions can gently shift your state."
-  },
-  {
-    "id": "kb_062",
-    "title": "Name The Feeling",
-    "category": "emotional_support",
-    "tags": [
-      "sad",
-      "emotion",
-      "feeling",
-      "label"
-    ],
-    "content": "Try naming your feeling more specifically, such as disappointed, lonely, or tired. More precise labels can help you understand what you need."
-  },
-  {
-    "id": "kb_063",
-    "title": "Gentle Activation",
-    "category": "emotional_support",
-    "tags": [
-      "sad",
-      "motivation",
-      "low energy",
-      "action"
-    ],
-    "content": "When motivation is low, reduce the goal. Instead of finishing a task, just start it for 2 minutes. Starting often reduces resistance."
-  }
+  "id": "kb_061",
+  "title": "Low Mood First Step",
+  "category": "emotional_support",
+  "tags": ["sad", "low mood", "empty", "down", "depressed"],
+  "content": "When you feel low, start with one very small action such as getting out of bed, drinking water, or opening a window. Small actions can gently shift your state."
+},
+{
+  "id": "kb_062",
+  "title": "Name The Feeling",
+  "category": "emotional_support",
+  "tags": ["sad", "emotion", "feeling", "label"],
+  "content": "Try naming your feeling more specifically, such as disappointed, lonely, or tired. More precise labels can help you understand what you need."
+},
+{
+  "id": "kb_063",
+  "title": "Gentle Activation",
+  "category": "emotional_support",
+  "tags": ["sad", "motivation", "low energy", "action"],
+  "content": "When motivation is low, reduce the goal. Instead of finishing a task, just start it for 2 minutes. Starting often reduces resistance."
+},
+{
+  "id": "kb_064",
+  "title": "CBT Thought Emotion Action Loop",
+  "category": "cbt_informed_support",
+  "tags": ["cbt", "thought", "emotion", "behavior", "pattern"],
+  "content": "A CBT-informed check separates the situation, automatic thought, emotion intensity, and response. Seeing the loop clearly can make the next step feel less personal and more workable."
+},
+{
+  "id": "kb_065",
+  "title": "Balanced Thought Reframe",
+  "category": "cbt_informed_support",
+  "tags": ["cbt", "reframe", "balanced thought", "evidence", "catastrophizing"],
+  "content": "When a thought is extreme, test it gently: what supports it, what does not, and what would be a more balanced sentence that still respects the difficulty?"
+},
+{
+  "id": "kb_066",
+  "title": "Behavioral Activation Tiny Step",
+  "category": "cbt_informed_support",
+  "tags": ["cbt", "behavioral activation", "avoidance", "tiny step", "motivation"],
+  "content": "For avoidance or low motivation, choose one tiny behavior that can be done in 2 to 10 minutes. Action is not meant to erase the feeling; it creates a small opening."
+},
+{
+  "id": "kb_067",
+  "title": "Cognitive Distortion Naming",
+  "category": "cbt_informed_support",
+  "tags": ["cbt", "cognitive distortion", "all-or-nothing", "mind reading", "catastrophizing"],
+  "content": "If a thought pattern appears, name it lightly rather than as a diagnosis: this might be catastrophizing, mind reading, or all-or-nothing thinking. The goal is distance, not self-criticism."
+}
+  
 ]

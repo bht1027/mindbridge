@@ -1,7 +1,15 @@
 from dataclasses import dataclass
 
 
-PIPELINE_MODES = ("full", "no_critic", "no_reviser", "no_safety", "no_retrieval")
+PIPELINE_MODES = (
+    "full",
+    "no_critic",
+    "no_reviser",
+    "no_safety",
+    "no_retrieval",
+    "no_empathy",
+    "no_strategy",
+)
 
 
 @dataclass(frozen=True)
@@ -11,6 +19,8 @@ class PipelineRunConfig:
     use_critic: bool = True
     use_reviser: bool = True
     use_retrieval: bool = True
+    use_empathy: bool = True
+    use_strategy: bool = True
 
 
 def get_pipeline_run_config(name: str) -> PipelineRunConfig:
@@ -20,6 +30,8 @@ def get_pipeline_run_config(name: str) -> PipelineRunConfig:
         "no_reviser": PipelineRunConfig("no_reviser", use_reviser=False),
         "no_safety": PipelineRunConfig("no_safety", use_safety=False),
         "no_retrieval": PipelineRunConfig("no_retrieval", use_retrieval=False),
+        "no_empathy": PipelineRunConfig("no_empathy", use_empathy=False),
+        "no_strategy": PipelineRunConfig("no_strategy", use_strategy=False),
     }
     try:
         return configs[name]
