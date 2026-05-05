@@ -137,7 +137,20 @@ STRATEGY_PLAYBOOK = (
     {
         "scenario": "academic_overload",
         "priority": 60,
-        "keywords": ("assignment", "school", "exam", "study", "deadline"),
+        "keywords": (
+            "assignment",
+            "school",
+            "exam",
+            "study",
+            "deadline",
+            "project",
+            "too big",
+            "cannot start",
+            "can't start",
+            "begin",
+            "procrastination",
+            "procrastinate",
+        ),
         "focus": (
             "task decomposition",
             "priority by deadline and effort",
@@ -222,6 +235,16 @@ ROUTE_FALLBACK_STEPS: dict[str, list[str]] = {
 }
 
 FAILED_COPING_FOLLOWUP: dict[str, dict[str, Any]] = {
+    "journaling_and_breathing": {
+        "mechanism": (
+            "Sometimes journaling turns into more problem-solving at bedtime, while breathing can calm the body for a moment without stopping the worry loop."
+        ),
+        "questions": (
+            "When you tried those, did your body calm down at all, or did the thoughts keep coming back?",
+            "Which part stayed most active after those tools: your body, your thoughts, or both?",
+            "Did either one help briefly before the same worries came back?",
+        ),
+    },
     "journaling": {
         "mechanism": (
             "Sometimes journaling does not bring relief because the page turns into more nighttime problem-solving instead of release."
@@ -821,6 +844,15 @@ class MindBridgePipeline:
                 )
         return cleaned
 
+    def _single_question(self, text: str) -> str:
+        cleaned = " ".join(text.strip().split())
+        if not cleaned:
+            return ""
+        match = re.search(r"[^?]+\?", cleaned)
+        if match:
+            return match.group(0).strip()
+        return cleaned.rstrip(".") + "?"
+
     def _content_tokens(self, text: str) -> set[str]:
         tokens = {
             word.strip(".,!?;:'\"()[]{}").lower()
@@ -1235,6 +1267,35 @@ class MindBridgePipeline:
                 "That comparison loop can get painful fast. "
                 "Who do you compare yourself to most when it spikes?"
             )
+        elif any(
+            token in lowered
+            for token in (
+                "deadline",
+                "deadlines",
+                "assignment",
+                "assignments",
+                "project",
+                "projects",
+                "procrastination",
+                "procrastinate",
+                "begin",
+                "start",
+            )
+        ):
+            response = (
+                "When a project feels too big, starting can feel like the hardest part. "
+                "What is the smallest piece you can see clearly right now?"
+            )
+        elif "sleep" in lowered or "wake" in lowered or "woke up" in lowered or "night" in lowered:
+            response = (
+                "Waking up with worry can make the whole day feel heavier. "
+                "What thought tends to show up first when you wake?"
+            )
+        elif "tired" in lowered or "no energy" in lowered or "exhausted" in lowered or "drained" in lowered:
+            response = (
+                "That low-energy feeling can make even simple things feel far away. "
+                "What feels most urgent to get through today?"
+            )
         elif "overwhelmed" in lowered or "too much" in lowered:
             response = (
                 "That sounds really overwhelming. Let's make it smaller: "
@@ -1371,20 +1432,30 @@ class MindBridgePipeline:
         memory_ack: str,
         variant: int,
     ) -> list[str]:
-        method = self._failed_method_for_turn(state)
+        explicit_methods = self._extract_methods_from_text(state.user_input)
+        if {"journaling", "breathing"}.issubset(explicit_methods):
+            method = "journaling_and_breathing"
+        else:
+            method = self._failed_method_for_turn(state)
         pattern = FAILED_COPING_FOLLOWUP.get(method, FAILED_COPING_FOLLOWUP["default"])
 
-        mechanism = self._single_sentence(
-            str(state.strategy.get("failure_mechanism_hypothesis", "")).strip()
-        )
-        if not mechanism:
+        use_rule_based_followup = bool(explicit_methods)
+        if use_rule_based_followup:
             mechanism = pattern["mechanism"]
+        else:
+            mechanism = self._single_sentence(
+                str(state.strategy.get("failure_mechanism_hypothesis", "")).strip()
+            )
+            if not mechanism:
+                mechanism = pattern["mechanism"]
 
-        question = str(state.strategy.get("exploration_question", "")).strip()
-        if not question:
+        if use_rule_based_followup:
             question = pattern["questions"][variant % len(pattern["questions"])]
-        if not question.endswith("?"):
-            question = question.rstrip(".") + "?"
+        else:
+            question = str(state.strategy.get("exploration_question", "")).strip()
+            if not question:
+                question = pattern["questions"][variant % len(pattern["questions"])]
+        question = self._single_question(question)
 
         return [
             self._validate_failed_effort(memory_ack),
@@ -1392,6 +1463,27 @@ class MindBridgePipeline:
             "If we understand this part first, the next step usually becomes much clearer.",
             question,
         ]
+
+    def _merge_failed_coping_parts(
+        self,
+        parts: list[str],
+        followup_parts: list[str],
+    ) -> list[str]:
+        merged = list(parts)
+        if not followup_parts:
+            return merged
+
+        # Preserve the empathy/reflection opening, then keep the validation and
+        # mechanism lines from the failed-coping follow-up.
+        additions = followup_parts[:2]
+        for addition in additions:
+            if addition and addition not in merged:
+                merged.append(addition)
+
+        question = followup_parts[-1]
+        if question:
+            merged.append(question)
+        return merged
 
     def _route_fallback_suggestions(
         self,
@@ -1811,9 +1903,7 @@ class MindBridgePipeline:
                 memory_ack,
                 variant,
             )
-            parts.extend(followup_parts[:2])
-            if followup_parts:
-                parts.append(followup_parts[-1])
+            parts = self._merge_failed_coping_parts(parts, followup_parts)
             if risk_level == "medium":
                 parts.append(
                     "If things feel heavier tonight, please stay connected with someone you trust rather than carrying this alone."
@@ -2083,6 +2173,11 @@ class MindBridgePipeline:
         else:
             state.critic = self._skipped_output(
                 "Critic ablation mode disabled this stage.",
+                empathy_gap="",
+                helpfulness_gap="",
+                safety_gap="",
+                naturalness_gap="",
+                revision_instruction="",
                 issues=[],
                 revision_goals=[],
             )
@@ -2283,9 +2378,6 @@ class MindBridgePipeline:
         if session_turn <= 1 and risk_level in {"low", "medium"} and not intro_turn:
             return self._natural_first_turn_response(state, risk_level)
 
-        if 2 <= session_turn <= 4 and risk_level in {"low", "medium"} and not intro_turn:
-            return self._cbt_exploration_response(state, risk_level, empathy)
-
         if positive_turn and risk_level == "low" and not failure_turn:
             if self._is_brief_positive_checkin(state.user_input, state):
                 lead = "I am glad to hear this moment feels a little lighter."
@@ -2300,6 +2392,9 @@ class MindBridgePipeline:
                 parts.append(self._collaborative_close(state, variant))
             return "\n\n".join(part for part in parts if part).strip()
 
+        if 2 <= session_turn <= 4 and risk_level in {"low", "medium"} and not intro_turn:
+            return self._cbt_exploration_response(state, risk_level, empathy)
+
         # 2) Follow-up stage: first understand why prior attempt did not work.
         if stage == "follow_up" or failure_turn:
             followup_parts = self._failed_coping_followup_parts(
@@ -2307,9 +2402,8 @@ class MindBridgePipeline:
                 memory_ack,
                 variant,
             )
-            # Keep only the most human pieces: validation + mechanism + one question.
-            parts.extend(followup_parts[:2])
-            parts.append(followup_parts[-1])
+            # Preserve the opening, then add mechanism + one question for the failed attempt.
+            parts = self._merge_failed_coping_parts(parts, followup_parts)
             if risk_level == "medium":
                 parts.append(
                     "If things feel heavier tonight, please stay connected with someone you trust rather than carrying this alone."

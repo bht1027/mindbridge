@@ -91,6 +91,7 @@ def _inject_theme() -> None:
             box-shadow: 0 16px 34px rgba(73, 82, 115, 0.08);
             padding: 0.72rem 0.85rem;
             margin: 0.85rem 0;
+            color: #171923;
         }
 
         div[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-user"]) {
@@ -99,6 +100,12 @@ def _inject_theme() -> None:
 
         div[data-testid="stChatMessage"]:has([data-testid="chatAvatarIcon-assistant"]) {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.86), rgba(239, 249, 245, 0.84));
+        }
+
+        div[data-testid="stChatMessage"] p,
+        div[data-testid="stChatMessage"] span,
+        div[data-testid="stChatMessage"] div {
+            color: #171923 !important;
         }
 
         [data-testid="stChatInput"] {

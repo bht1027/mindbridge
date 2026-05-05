@@ -87,6 +87,12 @@ def _conversation_text(turns: list[str]) -> str:
     return "\n".join(f"User turn {idx}: {turn}" for idx, turn in enumerate(turns, start=1))
 
 
+def _rate(part: float, whole: float) -> float:
+    if whole <= 0:
+        return 0.0
+    return round(part / whole, 3)
+
+
 def _run_case(case: dict[str, Any], runner_name: str, runner: object) -> dict[str, Any]:
     started = perf_counter()
     turns = _case_turns(case)
@@ -202,6 +208,7 @@ def _judge_pairwise_records(
         "errors": 0,
         "judged_pairs": 0,
         "results": [],
+        "preference_pairs": [],
     }
 
     for case_id, case_records in by_case.items():
@@ -228,10 +235,31 @@ def _judge_pairwise_records(
             )
             if judged.winner == "a":
                 summary["baseline_wins"] += 1
+                chosen = baseline
+                rejected = challenger
             elif judged.winner == "b":
                 summary["challenger_wins"] += 1
+                chosen = challenger
+                rejected = baseline
             else:
                 summary["ties"] += 1
+                chosen = None
+                rejected = None
+            if chosen and rejected:
+                preference_pair = {
+                    "case_id": case_id,
+                    "category": baseline["category"],
+                    "prompt": baseline["message"],
+                    "expected_risk_level": baseline["expected_risk_level"],
+                    "chosen_runner": chosen["runner"],
+                    "rejected_runner": rejected["runner"],
+                    "chosen_response": chosen["final_response"],
+                    "rejected_response": rejected["final_response"],
+                    "margin": judged.margin,
+                    "rationale": judged.rationale,
+                }
+                payload["preference_pair"] = preference_pair
+                summary["preference_pairs"].append(preference_pair)
             summary["judged_pairs"] += 1
             summary["results"].append(payload)
             challenger["pairwise_vs_baseline"] = payload
@@ -239,6 +267,15 @@ def _judge_pairwise_records(
             summary["errors"] += 1
             challenger["pairwise_error"] = str(exc)
 
+    judged_pairs = summary["judged_pairs"]
+    summary["baseline_win_rate"] = _rate(summary["baseline_wins"], judged_pairs)
+    summary["challenger_win_rate"] = _rate(summary["challenger_wins"], judged_pairs)
+    summary["tie_rate"] = _rate(summary["ties"], judged_pairs)
+    summary["tie_adjusted_challenger_win_rate"] = _rate(
+        summary["challenger_wins"] + 0.5 * summary["ties"],
+        judged_pairs,
+    )
+    summary["preference_pair_count"] = len(summary["preference_pairs"])
     return summary
 
 
@@ -423,6 +460,8 @@ def _error_analysis(
     runtime_errors_by_runner: dict[str, int] = {}
     judge_errors_by_runner: dict[str, int] = {}
     high_risk_mismatches: list[dict[str, Any]] = []
+    high_risk_total = 0
+    high_risk_detected = 0
 
     for record in records:
         runner = str(record["runner"])
@@ -436,10 +475,13 @@ def _error_analysis(
             and record["status"] == "ok"
             and str(record["expected_risk_level"]).lower() == "high"
         ):
+            high_risk_total += 1
             details = record.get("details", {})
             safety = details.get("safety", {}) if isinstance(details, dict) else {}
             predicted = str(safety.get("risk_level", "unknown")).lower()
-            if predicted != "high":
+            if predicted == "high":
+                high_risk_detected += 1
+            else:
                 high_risk_mismatches.append(
                     {
                         "case_id": record["case_id"],
@@ -454,6 +496,13 @@ def _error_analysis(
         "runtime_errors_by_runner": runtime_errors_by_runner,
         "judge_errors_by_runner": judge_errors_by_runner,
         "pipeline_high_risk_mismatches": high_risk_mismatches,
+        "pipeline_safety_recall": {
+            "runner": pipeline_runner,
+            "expected_high_risk_cases": high_risk_total,
+            "detected_high_risk_cases": high_risk_detected,
+            "missed_high_risk_cases": len(high_risk_mismatches),
+            "high_risk_recall": _rate(high_risk_detected, high_risk_total),
+        },
     }
 
 
@@ -533,6 +582,9 @@ def _build_markdown_report(
                     f"- Challenger wins: `{pairwise_summary.get('challenger_wins', 0)}`",
                     f"- Baseline wins: `{pairwise_summary.get('baseline_wins', 0)}`",
                     f"- Ties: `{pairwise_summary.get('ties', 0)}`",
+                    f"- Challenger win rate: `{pairwise_summary.get('challenger_win_rate', 0.0)}`",
+                    f"- Tie-adjusted challenger win rate: `{pairwise_summary.get('tie_adjusted_challenger_win_rate', 0.0)}`",
+                    f"- Exportable preference pairs: `{pairwise_summary.get('preference_pair_count', 0)}`",
                     f"- Errors: `{pairwise_summary.get('errors', 0)}`",
                 ]
             )
@@ -581,8 +633,14 @@ def _build_markdown_report(
             ]
         )
         mismatches = errors.get("pipeline_high_risk_mismatches", [])
+        safety_recall = errors.get("pipeline_safety_recall", {})
         lines.append(
             f"- Pipeline high-risk mismatches (expected `high`, predicted not `high`): `{len(mismatches)}`"
+        )
+        lines.append(
+            f"- Pipeline high-risk recall: `{safety_recall.get('high_risk_recall', 0.0)}` "
+            f"({safety_recall.get('detected_high_risk_cases', 0)}/"
+            f"{safety_recall.get('expected_high_risk_cases', 0)})"
         )
         for item in mismatches[:5]:
             lines.append(
@@ -699,6 +757,12 @@ def main() -> None:
         help="Also compare pipeline_full against the baseline on each case.",
     )
     parser.add_argument(
+        "--preference-pairs-output",
+        type=str,
+        default="data/preference_pairs.json",
+        help="Path for chosen/rejected pairs when --pairwise-judge is enabled.",
+    )
+    parser.add_argument(
         "--runners",
         type=str,
         default="all",
@@ -719,6 +783,7 @@ def main() -> None:
     cases_path = Path(args.cases)
     output_json = Path(args.output_json)
     output_md = Path(args.output_md)
+    preference_pairs_output = Path(args.preference_pairs_output)
     cases = _load_cases(cases_path)
     if args.max_cases > 0:
         cases = cases[: args.max_cases]
@@ -771,12 +836,27 @@ def main() -> None:
         "quality_summary": quality_summary,
         "paired_quality_deltas": paired_deltas,
         "pairwise_summary": pairwise_summary,
+        "preference_pairs_file": (
+            str(preference_pairs_output)
+            if pairwise_summary.get("enabled")
+            else None
+        ),
         "qualitative_summary": qualitative_summary,
         "records": records,
     }
 
     output_json.parent.mkdir(parents=True, exist_ok=True)
     output_md.parent.mkdir(parents=True, exist_ok=True)
+    if pairwise_summary.get("enabled"):
+        preference_pairs_output.parent.mkdir(parents=True, exist_ok=True)
+        preference_pairs_output.write_text(
+            json.dumps(
+                pairwise_summary.get("preference_pairs", []),
+                ensure_ascii=False,
+                indent=2,
+            ),
+            encoding="utf-8",
+        )
     output_json.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     output_md.write_text(
         _build_markdown_report(
@@ -795,6 +875,8 @@ def main() -> None:
 
     print(f"Saved detailed evaluation results to: {output_json}")
     print(f"Saved Markdown report to: {output_md}")
+    if pairwise_summary.get("enabled"):
+        print(f"Saved preference pairs to: {preference_pairs_output}")
 
 
 if __name__ == "__main__":

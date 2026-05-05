@@ -12,14 +12,14 @@ MindBridge is CBT-informed, not a clinical CBT provider. It borrows low-risk ide
 ## What this skeleton includes
 
 - `Input Analyzer` for emotion, intent, and risk classification
-- `Support Knowledge Retriever` for lightweight grounding
+- `Support Knowledge Retriever` for hybrid lexical/vector grounding
 - `Strategy Route` for scenario-specific action planning
 - `Empathy Agent` for emotional acknowledgment
 - `Strategy Agent` for practical next steps
 - `Safety Agent` for response constraints and risk checks
 - explicit backend `Safety Trace` logging
 - `Coordinator` for first-pass response synthesis
-- `Reflection Critic` and `Reviser` for self-improvement
+- rubric-guided `Reflection Critic` and `Reviser` for self-improvement
 - `Final Safety Check` before the reply is returned
 - short-term conversation memory (`memory_context` + `user_state`)
 - a CLI entry point and a simple `Streamlit` demo
@@ -192,12 +192,14 @@ python evaluate.py
 python evaluate.py --judge-model gpt-4.1-mini
 python evaluate.py --skip-judge
 python evaluate.py --bootstrap-samples 5000
+python evaluate.py --pairwise-judge
 ```
 
 By default it saves:
 
 - `evaluation_results.json`
 - `evaluation_report.md`
+- `data/preference_pairs.json` when `--pairwise-judge` is enabled
 
 Reproducible helper scripts:
 
@@ -207,7 +209,7 @@ Reproducible helper scripts:
 ./scripts/run_checks.sh
 ```
 
-`run_eval_fast.sh` skips the LLM judge for quick checks. `run_eval_full.sh` runs judge scoring, bootstrap CI, and qualitative sections.
+`run_eval_fast.sh` skips the LLM judge for quick checks. `run_eval_full.sh` runs judge scoring, bootstrap CI, pairwise judging, and qualitative sections.
 `run_checks.sh` runs Python syntax checks and lightweight unit tests that do not require an OpenAI API call.
 
 ## Rubric Alignment (Evaluation 4.3)
@@ -216,6 +218,8 @@ Reproducible helper scripts:
   - runtime and response-length summaries (`runtime_summary`)
   - baseline comparison (`single_agent_baseline` vs `pipeline_*`)
   - statistical significance via paired bootstrap CI (`paired_quality_deltas`)
+  - pairwise preference win rate and tie-adjusted win rate when `--pairwise-judge` is enabled
+  - high-risk safety recall for the full pipeline
   - ablation studies: `no_critic`, `no_reviser`, `no_safety`, `no_retrieval`, `no_empathy`, `no_strategy`
 - Qualitative analysis:
   - auto-selected case studies (top improvements and regressions)
@@ -234,7 +238,8 @@ Stores the prompt templates for all agents. This is the fastest place to iterate
 Defines a reusable JSON-returning agent wrapper over the LLM API.
 
 ### `retriever.py`
-Implements lightweight keyword-overlap retrieval over `data/support_kb.json`.
+Implements hybrid retrieval over `data/support_kb.json`: lexical tag/body overlap,
+TF-IDF vector similarity, reciprocal-rank fusion, and interpretable retrieval metadata.
 
 ### `pipeline.py`
 Runs the end-to-end workflow:
@@ -261,9 +266,10 @@ Defines the single-agent baseline used for comparison against the multi-agent pi
 ### `evaluate.py`
 Runs batch evaluation across the baseline, the full pipeline, and the ablation variants, with optional judge-based scoring and paired bootstrap confidence intervals versus the baseline.
 We evaluate both systems using an LLM-as-judge framework across four dimensions: empathy, helpfulness, safety, and naturalness. These metrics are chosen to reflect the key requirements of supportive dialogue systems.
+With `--pairwise-judge`, it also reports preference win rates, exports chosen/rejected response pairs, and tracks high-risk safety recall.
 
 ### `judge.py`
-Implements the LLM-as-judge scorer for empathy, helpfulness, safety, and naturalness.
+Implements the LLM-as-judge scorer for empathy, helpfulness, safety, and naturalness, plus pairwise preference comparison.
 
 ### `metrics.py`
 Provides summary statistics and paired bootstrap CI utilities for evaluation analysis.
@@ -299,6 +305,9 @@ This comparison allows us to evaluate whether structured reasoning and modular d
 When describing this implementation in your report, emphasize:
 
 - role specialization for interpretability
+- hybrid RAG-style grounding with lexical/vector retrieval and reranking
+- rubric-guided self-reflection for controllable revision
+- preference-style evaluation through pairwise win rate and chosen/rejected artifacts
 - structured intermediate outputs for analysis
 - reflection for iterative improvement
 - safety constraints as a dedicated module rather than an afterthought
