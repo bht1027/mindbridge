@@ -2,6 +2,12 @@
 
 `MindBridge` is a minimal Python project skeleton for a self-reflective multi-agent supportive dialogue system. It is designed for course-project use: easy to read, easy to extend, and aligned with the architecture you proposed.
 
+## Method Overview
+
+We propose a multi-agent supportive dialogue system that decomposes response generation into specialized modules, including input analysis, knowledge retrieval, empathy modeling, strategy planning, and safety control.
+
+Unlike a single-agent baseline that produces responses in one step, our system explicitly structures intermediate reasoning stages and introduces a reflection mechanism for iterative improvement. This design aims to improve interpretability, controllability, and response quality in sensitive scenarios such as emotional support.
+
 ## What this skeleton includes
 
 - `Input Analyzer` for emotion, intent, and risk classification
@@ -70,6 +76,14 @@ mindbridge/
   data/
     eval_cases.json
     support_kb.json
+  docs/
+    proposal_alignment.md
+    results.md
+  evaluation_pack/
+    qualitative/
+    quantitative/
+    scripts/
+    templates/
 ```
 
 ## Setup
@@ -262,6 +276,22 @@ Stratified evaluation set (48 cases) with low, medium, and high-risk scenarios a
 
 ### `data/support_kb.json`
 Compact support knowledge base used by retrieval grounding.
+
+### `evaluation_pack/`
+Report-support templates and checklist files for quantitative and qualitative evaluation writeups.
+
+### `docs/results.md`
+Saved evaluation output from a prior full run.
+
+## Baseline vs Multi-Agent
+
+We compare our full pipeline against a single-agent baseline.
+
+- The baseline generates responses in a single forward pass using a general prompt.
+- The multi-agent system decomposes the task into multiple stages and roles.
+- The pipeline includes explicit safety checks and reflection loops.
+
+This comparison allows us to evaluate whether structured reasoning and modular design improve response quality.
 
 ## Suggested next development steps
 

@@ -778,5 +778,42 @@
       "communication"
     ],
     "content": "Use calm validating language and avoid dismissing distress. Pair empathy with direct safety actions so support is compassionate and practical."
+  },
+  {
+    "id": "kb_061",
+    "title": "Low Mood First Step",
+    "category": "emotional_support",
+    "tags": [
+      "sad",
+      "low mood",
+      "empty",
+      "down",
+      "depressed"
+    ],
+    "content": "When you feel low, start with one very small action such as getting out of bed, drinking water, or opening a window. Small actions can gently shift your state."
+  },
+  {
+    "id": "kb_062",
+    "title": "Name The Feeling",
+    "category": "emotional_support",
+    "tags": [
+      "sad",
+      "emotion",
+      "feeling",
+      "label"
+    ],
+    "content": "Try naming your feeling more specifically, such as disappointed, lonely, or tired. More precise labels can help you understand what you need."
+  },
+  {
+    "id": "kb_063",
+    "title": "Gentle Activation",
+    "category": "emotional_support",
+    "tags": [
+      "sad",
+      "motivation",
+      "low energy",
+      "action"
+    ],
+    "content": "When motivation is low, reduce the goal. Instead of finishing a task, just start it for 2 minutes. Starting often reduces resistance."
   }
 ]
