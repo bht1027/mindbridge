@@ -8,13 +8,7 @@ from openai import OpenAI
 
 from config import Settings
 from prompts import BASELINE_PROMPT
-
-
-def _response_text(response: Any) -> str:
-    output_text = getattr(response, "output_text", None)
-    if output_text:
-        return output_text
-    return str(response)
+from utils import _response_text
 
 
 @dataclass
@@ -28,6 +22,13 @@ class BaselineResult:
 
 
 class SingleAgentBaseline:
+    """One-step LLM baseline used as the comparison system.
+
+    This baseline intentionally does not use MindBridge's analyzer, retriever,
+    strategy router, critic, reviser, safety agent, or memory. It tests how far
+    a single prompted LLM can go before adding the multi-agent architecture.
+    """
+
     def __init__(self, settings: Settings) -> None:
         self.settings = settings
         self.client = OpenAI(api_key=settings.openai_api_key)
@@ -43,5 +44,19 @@ class SingleAgentBaseline:
         return BaselineResult(
             user_input=user_input,
             final_response=_response_text(response).strip(),
-            metadata={"system": "baseline"},
+            metadata={
+                "system": "baseline",
+                "baseline_type": "single_agent_llm",
+                "model": self.settings.openai_model,
+                "temperature": self.settings.temperature,
+                "uses_input_analyzer": False,
+                "uses_retrieval": False,
+                "uses_strategy_router": False,
+                "uses_parallel_agents": False,
+                "uses_reflection_critic": False,
+                "uses_reviser": False,
+                "uses_final_safety_checker": False,
+                "uses_memory": False,
+                "comparison_target": "pipeline_full",
+            },
         )

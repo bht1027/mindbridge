@@ -7,6 +7,7 @@ from typing import Any
 from openai import OpenAI
 
 from config import Settings
+from utils import _response_text, _strip_code_fences
 
 
 _JUDGE_PROMPT = """
@@ -78,22 +79,6 @@ Return this JSON schema:
   "rationale": "short explanation"
 }
 """.strip()
-
-
-def _response_text(response: Any) -> str:
-    output_text = getattr(response, "output_text", None)
-    if output_text:
-        return output_text
-    return str(response)
-
-
-def _strip_code_fences(text: str) -> str:
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        cleaned = cleaned.split("\n", 1)[1]
-    if cleaned.endswith("```"):
-        cleaned = cleaned.rsplit("\n", 1)[0]
-    return cleaned.strip()
 
 
 def _safe_json_loads(text: str) -> dict[str, Any]:

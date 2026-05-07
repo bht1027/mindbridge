@@ -7,6 +7,7 @@ from typing import Any
 from openai import OpenAI
 
 from config import Settings
+from utils import _response_text, _strip_code_fences
 from prompts import (
     ANALYZER_PROMPT,
     COORDINATOR_PROMPT,
@@ -89,15 +90,6 @@ BOOL_FIELDS = {"needs_actionable_advice", "risk_detected", "approved"}
 RISK_LEVELS = {"low", "medium", "high", "unknown"}
 
 
-def _strip_code_fences(text: str) -> str:
-    cleaned = text.strip()
-    if cleaned.startswith("```"):
-        cleaned = cleaned.split("\n", 1)[1]
-    if cleaned.endswith("```"):
-        cleaned = cleaned.rsplit("\n", 1)[0]
-    return cleaned.strip()
-
-
 def _safe_json_loads(text: str) -> dict[str, Any]:
     cleaned = _strip_code_fences(text)
     try:
@@ -107,13 +99,6 @@ def _safe_json_loads(text: str) -> dict[str, Any]:
         return {"raw_output": parsed}
     except json.JSONDecodeError:
         return {"raw_output": text}
-
-
-def _response_text(response: Any) -> str:
-    output_text = getattr(response, "output_text", None)
-    if output_text:
-        return output_text
-    return str(response)
 
 
 def _coerce_list(value: Any) -> list[str]:

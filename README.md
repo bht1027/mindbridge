@@ -169,6 +169,16 @@ The single-agent baseline is exposed through `app.py` with:
 python app.py --system baseline --message "I feel overwhelmed with school."
 ```
 
+The baseline model is a one-step LLM supportive assistant. It uses the same
+configured OpenAI model as the pipeline, but only applies `BASELINE_PROMPT` and
+directly maps the user message to a final response. It does not use the
+MindBridge input analyzer, retrieval, strategy router, parallel empathy,
+strategy, and safety agents, reflection critic, reviser, final safety checker,
+or memory.
+This makes it a clean comparison point for testing whether the multi-agent
+architecture adds interpretability, controllability, and safety handling beyond
+a standard prompted LLM chatbot.
+
 ## Run the demo
 
 ```bash
@@ -211,6 +221,32 @@ Reproducible helper scripts:
 
 `run_eval_fast.sh` skips the LLM judge for quick checks. `run_eval_full.sh` runs judge scoring, bootstrap CI, pairwise judging, and qualitative sections.
 `run_checks.sh` runs Python syntax checks and lightweight unit tests that do not require an OpenAI API call.
+
+## Section 4.3 evaluation (presentation report + charts)
+
+`eval_section_4_3.py` runs all runners in parallel (one thread per runner), judges responses, computes statistical significance, and generates presentation-ready charts and a Markdown report.
+
+```bash
+# Main evaluation: 15 low-risk cases, 6 runners (baseline + 5 ablations)
+python eval_section_4_3.py
+
+# Targeted evaluation: all medium+high risk cases, baseline vs pipeline_full vs no_safety
+python eval_section_4_3_highrisk.py
+```
+
+Outputs are written to `docs/section_4_3/`:
+
+| File | Contents |
+|---|---|
+| `presentation_report.md` | Full Section 4.3 report (tables + case studies + limitations) |
+| `chart1_quality_bars.png` | Quality metrics bar chart by runner |
+| `chart2_delta_vs_baseline.png` | Mean Δ vs baseline with 95% CI |
+| `chart3_ablation_heatmap.png` | Ablation heatmap per metric |
+| `chart4_pairwise_pie.png` | Pairwise preference pie chart |
+| `chart5_runtime.png` | Average response time by runner |
+| `chart6_safety_recall.png` | High-risk safety recall gauge |
+| `results_4_3.json` | Full raw results (low-risk run) |
+| `results_4_3_highrisk.json` | Full raw results (medium+high-risk run) |
 
 ## Rubric Alignment (Evaluation 4.3)
 
@@ -288,6 +324,10 @@ Compact support knowledge base used by retrieval grounding.
 We compare our full pipeline against a single-agent baseline.
 
 - The baseline generates responses in a single forward pass using a general prompt.
+- The baseline uses the same underlying OpenAI model as the pipeline, so the
+  comparison focuses on architecture rather than model size.
+- The baseline disables retrieval, explicit routing, memory, parallel agents,
+  reflection, revision, and final safety checking.
 - The multi-agent system decomposes the task into multiple stages and roles.
 - The pipeline includes explicit safety checks and reflection loops.
 
@@ -311,4 +351,3 @@ When describing this implementation in your report, emphasize:
 - structured intermediate outputs for analysis
 - reflection for iterative improvement
 - safety constraints as a dedicated module rather than an afterthought
-

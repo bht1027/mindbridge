@@ -8,6 +8,8 @@ python -m py_compile \
   baseline.py \
   config.py \
   demo_streamlit.py \
+  eval_section_4_3.py \
+  eval_section_4_3_highrisk.py \
   evaluate.py \
   judge.py \
   metrics.py \

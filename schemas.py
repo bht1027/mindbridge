@@ -26,6 +26,7 @@ class DialogueState:
     final_check: dict[str, Any] = field(default_factory=dict)
     final_response_sections: dict[str, str] = field(default_factory=dict)
     final_response: str = ""
+    early_turn_override: str = ""  # set on turns 1-3 to bypass reviser/checker output
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

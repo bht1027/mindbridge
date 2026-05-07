@@ -31,6 +31,8 @@ HIGH_RISK_PATTERNS = (
     "don't want to keep going",
     "want to disappear",
     "better off without me",
+    "better off if i wasn't around",
+    "better off if i was gone",
     "wish i was gone",
     "wish i were gone",
     "hurt someone",
@@ -225,8 +227,8 @@ ROUTE_FALLBACK_STEPS: dict[str, list[str]] = {
         "Could you write a tiny 'must-do today' list with only one non-negotiable item?",
     ],
     "safety_escalation": [
-        "Please text or call one trusted person right now and let them stay with you while this wave passes.",
-        "If you might act on harmful thoughts, contact local emergency or crisis resources immediately.",
+        "What you're sharing right now really matters, and I'm worried about you. Are you somewhere safe right now — is there anyone with you or nearby?",
+        "You don't have to carry this alone. If things feel overwhelming, please reach out to someone you trust, or contact a crisis line — they're available 24/7 and it's okay to call just to talk.",
     ],
     "general_support": [
         "Would it help to choose one small step for tonight that lowers pressure, not perfection?",
@@ -1863,20 +1865,25 @@ class MindBridgePipeline:
         ):
             opening_bits.append(reflection)
         if opening_bits:
-            parts.append(" ".join(opening_bits))
+            joined = []
+            for i, bit in enumerate(opening_bits):
+                if i > 0 and joined and not joined[-1].endswith((".", "?", "!")):
+                    joined[-1] = joined[-1] + "."
+                joined.append(bit)
+            parts.append(" ".join(joined))
 
         if risk_level == "high":
             parts.append(
-                "Your safety comes first right now. Please contact a trusted person immediately, and use local emergency or crisis resources now if you might act on harmful thoughts."
+                "Are you safe right now? If things feel overwhelming, please reach out to someone you trust, or contact a crisis line — they're available 24/7."
             )
-            return "\n\n".join(part for part in parts if part).strip()
+            return " ".join(part for part in parts if part).strip()
 
         recall_response = self._memory_recall_relationship_response(state, variant)
         if recall_response:
             if risk_level == "medium":
                 return (
-                    f"{recall_response}\n\n"
-                    "If things feel heavier tonight, please stay connected with someone you trust rather than carrying this alone."
+                    f"{recall_response} "
+                    "If things feel heavier tonight, please stay connected with someone you trust."
                 )
             return recall_response
 
@@ -2314,6 +2321,59 @@ class MindBridgePipeline:
         )
         return structured, sections
 
+    def _build_early_turn_response(self, state: DialogueState, user_input: str) -> str:
+        """Build a short 2-sentence response for turns 1–3: empathy + one open question.
+
+        Bypasses coordinator/reviser on early turns where they consistently
+        ignore the "no suggestions" rule despite prompting.
+        """
+        ack = str(state.empathy.get("acknowledgement", "")).strip()
+        ack = self._single_sentence(ack)
+        ack = self._de_template_empathy(ack, self._conversation_variant(state))
+
+        question = str(state.strategy.get("exploration_question", "")).strip()
+        question = self._single_question(question)
+
+        # Reject the question if it contains advice or suggestions
+        advice_signals = (
+            "try", "have you tried", "it might help", "you could", "consider",
+            "schedule", "routine", "rule", "technique", "strategy", "jot down",
+            "write down", "consistent", "cut off", "avoid", "limit",
+        )
+        q_lower = question.lower()
+        if any(signal in q_lower for signal in advice_signals):
+            # Fall back to a simple open question using the topic from the analyzer
+            topic = str(state.analyzer.get("topic", "")).strip()
+            question = f"What's been the hardest part of that for you?" if topic else "What's been going on?"
+
+        if not ack and not question:
+            return "What's been going on for you?"
+        if not ack:
+            return question
+        if not question:
+            return ack
+
+        if not ack.endswith((".", "?", "!")):
+            ack = ack + "."
+        return f"{ack} {question}"
+
+    def _apply_high_risk_overlay(self, response: str, state: DialogueState) -> str:
+        # For high-risk, keep the reviser's warm opening but ensure a safety check
+        # and crisis resource offer follow. Avoid cold protocol language.
+        safety_line = (
+            "Are you safe right now? "
+            "If things feel overwhelming, please reach out to someone you trust, "
+            "or contact a crisis line — they're available 24/7 and it's okay to call just to talk."
+        )
+        lowered = response.lower()
+        already_has_safety = any(
+            token in lowered
+            for token in ("crisis", "safe right now", "trusted person", "emergency", "988", "hotline")
+        )
+        if already_has_safety:
+            return response
+        return f"{response} {safety_line}"
+
     def _render_final_response(
         self,
         state: DialogueState,
@@ -2322,6 +2382,31 @@ class MindBridgePipeline:
     ) -> str:
         if self.settings.response_style == "structured":
             return structured_text
+
+        # Early-turn override: bypasses reviser, checker, and all template assembly.
+        # Stored before the final_checker runs so the checker can't expand it.
+        if state.early_turn_override:
+            return state.early_turn_override
+
+        # Prefer the reviser's clean conversational output directly.
+        # The structured pipeline assembly produces multi-paragraph blocks that
+        # feel robotic. The reviser is prompted to write one natural paragraph —
+        # use that output directly instead of rebuilding from sections.
+        risk_level = str(state.safety.get("risk_level", "unknown")).lower()
+        reviser_text = str(state.reviser.get("final_response", "")).strip()
+        # Use final_checker output only if it looks like a single clean response
+        # (not a structured multi-section block).
+        checked_text = str(state.final_check.get("final_response", "")).strip()
+        direct_response = (
+            checked_text
+            if checked_text and "Empathy:" not in checked_text and "Action Step:" not in checked_text
+            else reviser_text
+        )
+        if direct_response and not state.reviser.get("_skipped") and self.settings.therapist_flow_strict:
+            if risk_level == "high":
+                return self._apply_high_risk_overlay(direct_response, state)
+            return direct_response
+
         if not self.settings.therapist_flow_strict:
             return self._render_standard_conversational_response(state, sections)
 
@@ -2358,20 +2443,25 @@ class MindBridgePipeline:
         ):
             opening_bits.append(reflection)
         if opening_bits:
-            parts.append(" ".join(opening_bits))
+            joined = []
+            for i, bit in enumerate(opening_bits):
+                if i > 0 and joined and not joined[-1].endswith((".", "?", "!")):
+                    joined[-1] = joined[-1] + "."
+                joined.append(bit)
+            parts.append(" ".join(joined))
 
         if risk_level == "high":
             parts.append(
-                "Your safety comes first right now. Please contact a trusted person immediately, and use local emergency or crisis resources now if you might act on harmful thoughts."
+                "Are you safe right now? If things feel overwhelming, please reach out to someone you trust, or contact a crisis line — they're available 24/7."
             )
-            return "\n\n".join(part for part in parts if part).strip()
+            return " ".join(part for part in parts if part).strip()
 
         recall_response = self._memory_recall_relationship_response(state, variant)
         if recall_response:
             if risk_level == "medium":
                 return (
-                    f"{recall_response}\n\n"
-                    "If things feel heavier tonight, please stay connected with someone you trust rather than carrying this alone."
+                    f"{recall_response} "
+                    "If things feel heavier tonight, please stay connected with someone you trust."
                 )
             return recall_response
 
@@ -2574,6 +2664,19 @@ class MindBridgePipeline:
             state,
         )
 
+        # On early turns, strip all action-oriented strategy fields before passing
+        # to the coordinator. The model ignores "don't suggest on turn 1-3" regardless
+        # of prompting, so we enforce it in code.
+        session_turn_now = self._session_turn(state)
+        coordinator_strategy = dict(state.strategy)
+        if session_turn_now <= 3:
+            coordinator_strategy = {
+                **coordinator_strategy,
+                "suggestions": [],
+                "next_step": "",
+                "exploration_question": str(state.strategy.get("exploration_question", "")).strip(),
+            }
+
         state.coordinator = self.agents["coordinator"].run(
             {
                 "user_input": user_input,
@@ -2586,12 +2689,19 @@ class MindBridgePipeline:
                 "memory_context": state.memory_context,
                 "user_state": state.user_state,
                 "empathy": state.empathy,
-                "strategy": state.strategy,
+                "strategy": coordinator_strategy,
                 "safety": state.safety,
             }
         )
 
         draft_response = self._run_revision_stage(user_input, state)
+
+        # Hard override for early turns: the LLM ignores "don't suggest on turn 1-3"
+        # regardless of prompting. Build the response from empathy + exploration_question
+        # directly, capping at 2 clean sentences.
+        if session_turn_now <= 3 and str(state.safety.get("risk_level", "low")).lower() not in {"high"}:
+            draft_response = self._build_early_turn_response(state, user_input)
+            state.early_turn_override = draft_response
         candidate_response, candidate_sections = self._build_structured_response(
             state,
             draft_response,
@@ -2599,15 +2709,17 @@ class MindBridgePipeline:
         state.final_response_sections = candidate_sections
 
         if self.run_config.use_safety:
+            # Pass the reviser's clean conversational output to the final_checker,
+            # not the structured candidate_response (which contains section headers).
             state.final_check = self.agents["final_checker"].run(
                 {
                     "user_input": user_input,
-                    "candidate_response": candidate_response,
+                    "candidate_response": draft_response,
                     "safety": state.safety,
                     "safety_trace": state.safety_trace,
                 }
             )
-            checked = state.final_check.get("final_response", candidate_response)
+            checked = state.final_check.get("final_response", draft_response)
             checked_structured, checked_sections = self._build_structured_response(
                 state,
                 checked,
