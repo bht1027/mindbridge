@@ -1105,6 +1105,12 @@ class MindBridgePipeline:
         return False
 
     def _is_positive_turn(self, user_input: str, state: DialogueState) -> bool:
+        # Never treat high-risk or safety-escalation turns as positive
+        if str(state.safety.get("final_risk_level", "")).lower() == "high":
+            return False
+        if str(state.strategy_route.get("scenario", "")).lower() == "safety_escalation":
+            return False
+
         lowered = user_input.lower()
         emotion = str(state.analyzer.get("emotion", "")).strip().lower()
         if any(flag in lowered for flag in ("not happy", "not better", "not good", "still bad")):
@@ -1128,6 +1134,10 @@ class MindBridgePipeline:
             "unsafe",
             "problem",
             "issue",
+            "better off",   # catches "better off if I wasn't around" etc.
+            "not around",
+            "wasn't here",
+            "without me",
         )
         if any(token in lowered for token in distress_tokens):
             return False
